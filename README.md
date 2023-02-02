@@ -1,6 +1,6 @@
-|| Treasure Wars! ||\n
----Background---
-Treasure Wars! is a 2 player turn-based strategy game in which the player will play against the computer, and attempt to capture the treasure chest from the opponent's base and bring it back to their own base. Each team will have two barracks that can generate new units, with a tentative total maximum of 8 units.
+|| Treasure Wars! ||\
+---Background---\
+Treasure Wars! is a 2 player turn-based strategy game in which the player will play against the computer, and attempt to capture the treasure chest from the opponent's base and bring it back to their own base. Each team will have two barracks that can generate new units, with a tentative total maximum of 8 units.\
 There will be 3 different types of units that can be spawned, each with different attack and defense weights. When a unit is in enemy territory, the unit can be ugraded for improved stats. The unit stats will be reverted once returning to the player's own side. For each round, the player will recieve a set number of action points (tentatively 4), with each action (moving, spawning, attacking, upgrading) costing either 1 or 2 points.
 
 ---Functionality & MVPs---
