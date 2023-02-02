@@ -26,7 +26,7 @@ In addition, this project will include:
 ![Wireframe img](wireframe.png)
 
 - Controls button displays the rules of the game in text form
-- About will contain the project's Github repo and a like to my linkedin
+- About will contain the project's Github repo and a link to my linkedin
 - Tutorial mode will guide the player through a small demo explaining all the rules and possible actions (bonus)
 - At the start of the game, the player barracks will prompt the user to select which two units to start with, and will display three icons representing the units for the player to select from.
 
