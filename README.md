@@ -28,7 +28,7 @@ In addition, this project will include:
 - Controls button displays the rules of the game in text form
 - About will contain the project's Github repo and a link to my linkedin
 - Tutorial mode will guide the player through a small demo explaining all the rules and possible actions (bonus)
-- At the start of the game, the player barracks will prompt the user to select which two units to start with, and will display three icons representing the units for the player to select from.\
+- At the start of the game, the player barracks will prompt the user to select which two units to start with, and will display three icons representing the units for the player to select from.
 
 ---Technologies, Libraries, APIs---\
 This project will be implemented using the following:
@@ -37,22 +37,23 @@ This project will be implemented using the following:
 - npm
 
 ---Implementation Timeline---\
-Friday & Weekend\
+Friday & Weekend
 - Set up Models. Set up project & webpack. Create Board, Barracks, Base, & unit classes with basic movement. Render the Board to the canvas with the starting pieces in place.
 
-Monday\
+Monday
 - Set up Views basics & Controllers. Ensure that controller conveys clicks to the model. Ensure that model updates piece position correctly.
 
-Tuesday\
+Tuesday
 - Model will enforce correct game logic. Pieces will move and attack the correct spaces, & be able to upgrade, capture treasure, spawn, etc. Implement AI for the enemy team.
 
-Wednesday\
+Wednesday
 - Enhance Views. Full user selection views, adding sprites. Implement bonuses if time.
 
-Thursday\
+Thursday
 - Final touches. Deploy to GitHub.
 
----Bonuses---\
+---Bonuses---
 - Add tutorial mode
 - Add animated radial user selection menus
 - Add multiplayer option
+- Add functionality for players to pick up their own chest if dropped by the opposite team, & return it to their own base.
