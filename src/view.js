@@ -1,7 +1,8 @@
-const Board = require("./board");
-const Barrack = require("./pieces/barrack");
-const Base = require("./pieces/base");
-const Treasure = require("./pieces/treasure")
+import Board from "./board";
+import Barrack from "./pieces/barrack";
+import Base from "./pieces/base";
+import Treasure from "./pieces/treasure";
+import Archer from "./pieces/units/archer";
 
 class View {
     static SQUARE_DIM = 100;
@@ -44,6 +45,15 @@ class View {
             }
         }
     }
+
+    bindEvents(ctx) {
+        ctx.canvas.addEventListener('click', this.handleClick.bind(this));
+    }
+
+    handleClick(square) {
+        console.log(square.offsetX);
+    }
+
 }
 
 Barrack.prototype.draw = function(ctx, x, y) {
@@ -81,4 +91,21 @@ Treasure.prototype.draw = function(ctx, x, y) {
         View.SQUARE_DIM * .30);
 }
 
-module.exports = View;
+Archer.prototype.draw = function(ctx, x, y) {
+    this.team === Board.ENEMY_TEAM ? ctx.fillStyle = "red" : ctx.fillStyle = "blue";
+    ctx.beginPath();
+    ctx.arc(
+        View.SQUARE_DIM * x + View.SQUARE_DIM * .50,
+        View.SQUARE_DIM * y + View.SQUARE_DIM * .50,
+        View.SQUARE_DIM * .35,
+        1.0 * Math.PI, 2.0 * Math.PI);
+    ctx.fill();
+    ctx.fillStyle = "saddlebrown"
+    ctx.fillRect(
+        View.SQUARE_DIM * x + View.SQUARE_DIM * .46,
+        View.SQUARE_DIM * y + View.SQUARE_DIM * .10,
+        View.SQUARE_DIM * .08,
+        View.SQUARE_DIM * .80);
+}
+
+export default View;

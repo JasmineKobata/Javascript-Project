@@ -1,7 +1,8 @@
 class Piece {
-    constructor(team) {
+    constructor(team, pos) {
         this.team = team;
+        this.pos = pos
     }
 }
 
-module.exports = Piece;
+export default Piece;

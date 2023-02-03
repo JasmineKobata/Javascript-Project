@@ -1,6 +1,7 @@
-const Barrack = require("./pieces/barrack")
-const Base = require("./pieces/base")
-const Treasure = require("./pieces/treasure")
+import Barrack from "./pieces/barrack";
+import Base from "./pieces/base";
+import Treasure from "./pieces/treasure";
+import Archer from "./pieces/units/archer";
 
 class Board {
     static GRID_WIDTH = 7;
@@ -33,16 +34,43 @@ class Board {
                 grid[i].push([]);
             }
         }
-        grid[0][0].push(new Barrack(Board.ENEMY_TEAM));
-        grid[0][Board.GRID_WIDTH-1].push(new Barrack(Board.ENEMY_TEAM));
-        grid[Board.GRID_HEIGHT-1][0].push(new Barrack(Board.PLAYER_TEAM));
-        grid[Board.GRID_HEIGHT-1][Board.GRID_WIDTH-1].push(new Barrack(Board.PLAYER_TEAM));
-        grid[0][Math.floor(Board.GRID_WIDTH/2)].push(new Base(Board.ENEMY_TEAM));
-        grid[Board.GRID_HEIGHT-1][Math.floor(Board.GRID_WIDTH/2)].push(new Base(Board.PLAYER_TEAM));
-        grid[0][Math.floor(Board.GRID_WIDTH/2)].push(new Treasure(Board.ENEMY_TEAM));
-        grid[Board.GRID_HEIGHT-1][Math.floor(Board.GRID_WIDTH/2)].push(new Treasure(Board.PLAYER_TEAM));
+
+        let pos = {y: 0, x: 0};
+        grid.get(pos).push(new Barrack(Board.ENEMY_TEAM, pos));
+
+        pos = {y: 0, x: Board.GRID_WIDTH-1};
+        grid.get(pos).push(new Barrack(Board.ENEMY_TEAM, pos));
+
+        pos = {y: Board.GRID_HEIGHT-1, x: 0};
+        grid.get(pos).push(new Barrack(Board.PLAYER_TEAM, pos));
+
+        pos = {y: Board.GRID_HEIGHT-1, x: Board.GRID_WIDTH-1};
+        grid.get(pos).push(new Barrack(Board.PLAYER_TEAM, pos));
+
+        pos = {y: 0, x: Math.floor(Board.GRID_WIDTH/2)};
+        grid.get(pos).push(new Base(Board.ENEMY_TEAM, pos));
+
+        pos = {y: Board.GRID_HEIGHT-1, x: Math.floor(Board.GRID_WIDTH/2)}
+        grid.get(pos).push(new Base(Board.PLAYER_TEAM, pos));
+
+        pos = {y: 0, x: Math.floor(Board.GRID_WIDTH/2)}
+        grid.get(pos).push(new Treasure(Board.ENEMY_TEAM, pos));
+
+        pos = {y: Board.GRID_HEIGHT-1, x: Math.floor(Board.GRID_WIDTH/2)}
+        grid.get(pos).push(new Treasure(Board.PLAYER_TEAM, pos));
+
+        //Temp units for testing
+        pos = {y: 3, x: 0}
+        grid.get(pos).push(new Archer(Board.PLAYER_TEAM, pos, this));
+        pos = {y: 3, x: 2}
+        grid.get(pos).push(new Archer(Board.PLAYER_TEAM, pos, this));
+
         return grid;
     }
 }
 
-module.exports = Board;
+Array.prototype.get = function(pos) {
+    return this[pos.y][pos.x];
+}
+
+export default Board;

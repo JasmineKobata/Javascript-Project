@@ -1,11 +1,11 @@
-const Unit = require("../unit")
+import Unit from "../unit";
 
 class Defender extends Unit {
-    constructor(team) {
-        super(team);
+    constructor(team, pos, board) {
+        super(team, pos, board);
         this.attack = 1;
         this.defense = 3;
     }
 }
 
-module.exports = Defender;
+export default Defender;

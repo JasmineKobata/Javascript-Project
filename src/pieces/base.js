@@ -1,9 +1,9 @@
-const Piece = require("../piece")
+import Piece from "../piece";
 
 class Base extends Piece {
-    constructor(team) {
-        super(team);
+    constructor(team, pos) {
+        super(team, pos);
     }
 }
 
-module.exports = Base;
+export default Base;
