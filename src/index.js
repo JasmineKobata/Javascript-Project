@@ -7,6 +7,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
     const game = new Game();
     const view = new View(game, ctx);
+    game.view = view;
 
     view.bindEvents(ctx);
 });

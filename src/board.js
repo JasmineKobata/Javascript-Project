@@ -2,6 +2,8 @@ import Barrack from "./pieces/barrack";
 import Base from "./pieces/base";
 import Treasure from "./pieces/treasure";
 import Archer from "./pieces/units/archer";
+import Defender from "./pieces/units/defender";
+import Infantry from "./pieces/units/infantry";
 
 class Board {
     static GRID_WIDTH = 7;
@@ -61,16 +63,18 @@ class Board {
 
         //Temp units for testing
         pos = {y: 3, x: 0}
-        grid.get(pos).push(new Archer(Board.PLAYER_TEAM, pos, this));
-        pos = {y: 3, x: 2}
-        grid.get(pos).push(new Archer(Board.PLAYER_TEAM, pos, this));
+        grid.get(pos).push(new Archer(Board.PLAYER_TEAM, pos));
+        pos = {y: 3, x: 1}
+        grid.get(pos).push(new Infantry(Board.PLAYER_TEAM, pos));
+        pos = {y: 2, x: 1}
+        grid.get(pos).push(new Archer(Board.PLAYER_TEAM, pos));
+        pos = {y: 4, x: 1}
+        grid.get(pos).push(new Archer(Board.PLAYER_TEAM, pos));
+        pos = {y: 3, x: 3}
+        grid.get(pos).push(new Defender(Board.ENEMY_TEAM, pos));
 
         return grid;
     }
-}
-
-Array.prototype.get = function(pos) {
-    return this[pos.y][pos.x];
 }
 
 export default Board;

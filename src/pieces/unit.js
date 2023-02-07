@@ -1,24 +1,30 @@
-import Piece from "../piece";
 import Board from "../board";
+import Piece from "../piece";
+import {isOnBoard} from "../utils";
 
 class Unit extends Piece {
-    constructor(team, pos, board) {
+    constructor(team, pos) {
         super(team, pos);
         this.attack = null;
         this.defense = null;
         this.attackDist = 1;
-        this.board = board;
-        this.getMoves();
+        this.moves = null;
+        this.attacks = [];
+        this.board = null;
+    }
+
+    resetActions() {
+        this.moves = null;
+        this.attacks = [];
     }
 
     getMoves() {
-        let validMoves = this.getMovesSet();
-        validMoves.delete(JSON.stringify(this.pos));
-        validMoves = [...validMoves].map(elem => {
+        this.moves = this.getMovesSet();
+        this.moves.delete(JSON.stringify(this.pos));
+        this.moves = [...this.moves].map(elem => {
             return JSON.parse(elem);
         });
-        console.log(validMoves)
-        return validMoves;
+        return this.moves;
     }
 
     getMovesSet(validVisited = new Set(), maxDist = 2, pos = this.pos) {
@@ -27,7 +33,7 @@ class Unit extends Piece {
         for (let y=pos.y-1; y <= pos.y + 1; y++) {
             for (let x=pos.x-1; x <= pos.x + 1; x++) {
                 let newPos = {y: y, x: x};
-                if (this.isOnBoard(newPos)) {
+                if (isOnBoard(newPos) && !this.hasUnit(newPos)) {
                     if (!validVisited.has(JSON.stringify(newPos))) {
                         validVisited.add(JSON.stringify(newPos));
                     }
@@ -39,21 +45,30 @@ class Unit extends Piece {
         return validVisited;
     }
 
-    attack() {
-
+    getAttacks() {
+        for (let y=this.pos.y-this.attackDist; y <= this.pos.y + this.attackDist; y++) {
+            for (let x=this.pos.x-this.attackDist; x <= this.pos.x + this.attackDist; x++) {
+                let newPos = {y: y, x: x};
+                if (isOnBoard(newPos)) {
+                    let square = this.board.grid.get(newPos);
+                    if (this.hasUnit(newPos) && square.last().team !== this.team) {
+                        this.attacks.push(newPos);
+                    }
+                }
+            }
+        }
+        return this.attacks;
     }
 
     hasUnit(pos) {
-        let boardSquare = this.board.grid(pos);
-        let lastElem = boardSquare[boardSquare.length - 1];
-        if (boardSquare.length > 0 && typeof lastElem === 'Unit') {
-            return true;
+        let square = this.board.grid.get(pos);
+        if (square.length > 0) {
+            let elemType = square.last().parentType();
+            if (elemType === 'Unit') {
+                return true;
+            }
         }
         return false;
-    }
-
-    isOnBoard(pos) {
-        return pos.x > -1 && pos.x < Board.GRID_WIDTH && pos.y > -1 && pos.y < Board.GRID_HEIGHT;
     }
 }
 
