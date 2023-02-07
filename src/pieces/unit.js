@@ -10,6 +10,8 @@ class Unit extends Piece {
         this.attackDist = 1;
         this.moves = null;
         this.attacks = [];
+        this.hasMoved = false;
+        this.hasAttacked = false;
         this.board = null;
     }
 

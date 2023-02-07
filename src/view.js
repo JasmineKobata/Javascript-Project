@@ -56,29 +56,44 @@ class View {
 
     drawBarrackSelection(pos) {
         this.ctx.fillStyle = 'lightskyblue';
-        console.log(pos);
-        let newPosX;
-        pos.x === 0 ? newPosX = pos.x + 0.25 : newPosX = pos.x - 2.25;
-        let newPosY = pos.y - 1;
+        let newPos = this.adjustMenuPosition(pos);
         
         this.ctx.fillRect(
-            View.SQUARE_DIM * newPosX,
-            View.SQUARE_DIM * newPosY,
+            View.SQUARE_DIM * newPos.x,
+            View.SQUARE_DIM * newPos.y,
             View.SQUARE_DIM * 3,
             View.SQUARE_DIM * 1.5);
         this.ctx.strokeStyle = 'cornflowerblue';
         this.ctx.lineWidth = 1;
         this.ctx.strokeRect(
-            View.SQUARE_DIM * newPosX,
-            View.SQUARE_DIM * newPosY,
+            View.SQUARE_DIM * newPos.x,
+            View.SQUARE_DIM * newPos.y,
             View.SQUARE_DIM * 3,
             View.SQUARE_DIM * 1.5);
 
 
+        this.ctx.font = "30px Copperplate";
+        this.ctx.fillStyle = "dimgrey";
+        this.ctx.lineWidth = 3;
+        this.ctx.fillText("Buy New Troop?",
+            View.SQUARE_DIM * (newPos.x + 0.35),
+            View.SQUARE_DIM * (newPos.y + 0.35));
 
-        new Infantry().draw(this.ctx, newPosX, newPosY + 0.5);
-        new Archer().draw(this.ctx, newPosX + 1, newPosY + 0.5);
-        new Defender().draw(this.ctx, newPosX + 2, newPosY + 0.5);
+        let troopSelection = [];
+        troopSelection.push(new Infantry(this.game.currentPlayer, {y: newPos.y+0.5, x: newPos.x}));
+        troopSelection.push(new Archer(this.game.currentPlayer, {y: newPos.y+0.5, x: newPos.x+1}));
+        troopSelection.push(new Defender(this.game.currentPlayer, {y: newPos.y+0.5, x: newPos.x+2}));
+        troopSelection.forEach( (unit) => {
+            unit.draw(this.ctx);
+        });
+        return troopSelection;
+    }
+
+    adjustMenuPosition(pos) {
+        let newPos = {};
+        pos.x === 0 ? newPos.x = pos.x + 0.25 : newPos.x = pos.x - 2.25;
+        pos.y === 0 ? newPos.y = pos.y + 0.5 : newPos.y = pos.y - 1;
+        return newPos;
     }
 
     drawOutline(pos) {
@@ -131,12 +146,14 @@ class View {
     handleClick(event) {
         let x = Math.floor(event.offsetX / (View.SQUARE_DIM * this.ratio))
         let y = Math.floor(event.offsetY / (View.SQUARE_DIM * this.ratio))
-
-        let pos = {y, x}
+        let xExact = event.offsetX / (View.SQUARE_DIM * this.ratio);
+        let yExact = event.offsetY / (View.SQUARE_DIM * this.ratio);
+        let pos = {y, x};
+        let posExact = {y: yExact, x: xExact};
         if (isOnBoard(pos)) {
             this.game.ctx.clickedPos = pos
+            this.game.ctx.exactPos = posExact;
             this.game.stateMachine();
-//            this.game.mouseClicked(pos);
         }
     }
 }
@@ -175,53 +192,53 @@ function drawStats(unit, ctx, x, y) {
         View.SQUARE_DIM * y + View.SQUARE_DIM * .75);
 }
 
-Barrack.prototype.draw = function(ctx, x, y) {
+Barrack.prototype.draw = function(ctx) {
     this.team === Board.ENEMY_TEAM ? ctx.fillStyle = "red" : ctx.fillStyle = "blue";
     ctx.fillRect(
-        View.SQUARE_DIM * x + View.SQUARE_DIM * .10,
-        View.SQUARE_DIM * y + View.SQUARE_DIM * .20,
+        View.SQUARE_DIM * this.pos.x + View.SQUARE_DIM * .10,
+        View.SQUARE_DIM * this.pos.y + View.SQUARE_DIM * .20,
         View.SQUARE_DIM * .80,
         View.SQUARE_DIM * .60);
 }
 
-Base.prototype.draw = function(ctx, x, y) {
+Base.prototype.draw = function(ctx) {
     this.team === Board.ENEMY_TEAM ? ctx.fillStyle = "red" : ctx.fillStyle = "blue";
     ctx.beginPath();
     ctx.arc(
-        View.SQUARE_DIM * x + View.SQUARE_DIM * .50,
-        View.SQUARE_DIM * y + View.SQUARE_DIM * .50,
+        View.SQUARE_DIM * this.pos.x + View.SQUARE_DIM * .50,
+        View.SQUARE_DIM * this.pos.y + View.SQUARE_DIM * .50,
         View.SQUARE_DIM * .35,
         0, 2.0 * Math.PI);
     ctx.fill();
 }
 
-Treasure.prototype.draw = function(ctx, x, y) {
+Treasure.prototype.draw = function(ctx) {
     this.team === Board.ENEMY_TEAM ? ctx.fillStyle = "darkred" : ctx.fillStyle = "darkblue";
     ctx.fillRect(
-        View.SQUARE_DIM * x + View.SQUARE_DIM * .15,
-        View.SQUARE_DIM * y + View.SQUARE_DIM * .30,
+        View.SQUARE_DIM * this.pos.x + View.SQUARE_DIM * .15,
+        View.SQUARE_DIM * this.pos.y + View.SQUARE_DIM * .30,
         View.SQUARE_DIM * .70,
         View.SQUARE_DIM * .40);
     this.team === Board.ENEMY_TEAM ? ctx.fillStyle = "gold" : ctx.fillStyle = "silver";
     ctx.fillRect(
-        View.SQUARE_DIM * x + View.SQUARE_DIM * .20,
-        View.SQUARE_DIM * y + View.SQUARE_DIM * .35,
+        View.SQUARE_DIM * this.pos.x + View.SQUARE_DIM * .20,
+        View.SQUARE_DIM * this.pos.y + View.SQUARE_DIM * .35,
         View.SQUARE_DIM * .60,
         View.SQUARE_DIM * .30);
 }
 
-Unit.prototype.draw = function(ctx, x, y) {
+Unit.prototype.draw = function(ctx) {
     this.team === Board.ENEMY_TEAM ? ctx.fillStyle = "red" : ctx.fillStyle = "blue";
     this.image.onload = () => {
         ctx.drawImage(
             this.image,
-            View.SQUARE_DIM * x,
-            View.SQUARE_DIM * y,
+            View.SQUARE_DIM * this.pos.x,
+            View.SQUARE_DIM * this.pos.y,
             View.SQUARE_DIM, View.SQUARE_DIM);
         ctx.beginPath();
         ctx.stroke();
     //    drawDot(this, ctx, x, y);
-        drawStats(this, ctx, x, y);
+        drawStats(this, ctx, this.pos.x, this.pos.y);
     };
     this.image.src = this.image.src;
     
