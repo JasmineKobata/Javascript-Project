@@ -1,13 +1,27 @@
 import Board from "./board";
+import HumanPlayer from "./humanPlayer";
 
 class Game {
     constructor() {
         this.board = new Board();
         this.view = null;
         this.state = 'unselected';
-        this.currentPlayer = Board.PLAYER_TEAM;
+        this.player = new HumanPlayer(Board.PLAYER_TEAM);
+        this.enemy = new HumanPlayer(Board.ENEMY_TEAM);
+        this.currentPlayer = this.player;
         this.actionPoints = 4;
         this.ctx = {}; //{ clickedPos, selectedSquare }
+    }
+
+    resetGame(view) {
+        this.board = new Board();
+        this.view = view;
+        this.state = 'unselected';
+        this.player = new HumanPlayer(Board.PLAYER_TEAM);
+        this.enemy = new HumanPlayer(Board.ENEMY_TEAM);
+        this.currentPlayer = this.player;
+        this.actionPoints = 4;
+        this.ctx = {};
     }
 
     switchPlayers() {
@@ -22,7 +36,8 @@ class Game {
             })
         })
         this.actionPoints = 4;
-        this.currentPlayer === Board.PLAYER_TEAM ? this.currentPlayer = Board.ENEMY_TEAM : this.currentPlayer = Board.PLAYER_TEAM;
+        this.state = 'unselected';
+        this.currentPlayer === this.player ? this.currentPlayer = this.enemy : this.currentPlayer = this.player;
     }
 
     //ctx -> {clickedPos always set, selectedSquare that will be set in unselected stage}
@@ -36,7 +51,8 @@ class Game {
                     this.ctx.selectedSquare = square;
                     this.state = 'unit';
                 } //else if barrack is selected
-                else if (this.actionPoints > 1 && this.barrackSelected(square.first())) {
+                else if (this.actionPoints > 1 && this.currentPlayer.units.length < 8
+                    && this.barrackSelected(square.first())) {
                     this.ctx.menu = this.view.drawBarrackSelection(square.first().pos);
                     this.ctx.selectedSquare = square;
                     this.state = 'barrack';
@@ -48,13 +64,19 @@ class Game {
                     console.log("B");
                     this.ctx = {};
                     this.state = 'unselected';
-                    if (this.actionPoints === 0) { this.switchPlayers(); }
-                    this.view.drawBoard();
+                    if (this.board.isWon()) {
+                        this.view.drawBoard();
+                        this.view.drawWinningScreen();
+                    } else {
+                        if (this.actionPoints === 0) { this.switchPlayers(); }
+                        this.view.drawBoard();
+                    }
                 } //else if action not taken
                 else {
                     console.log("C");
                     if (this.unitSelected(square.last())) {}
-                    else if (this.actionPoints > 1 && this.barrackSelected(square.first())) {
+                    else if (this.actionPoints > 1 && this.currentPlayer.units.length < 8
+                        && this.barrackSelected(square.first())) {
                         this.ctx.menu = this.view.drawBarrackSelection(square.first().pos);
                         this.state = 'barrack';
                     }
@@ -94,7 +116,7 @@ class Game {
     unitSelected(unit) {
         let unitSelected = false;
         this.view.drawBoard();
-        if (unit && unit.parentType() === 'Unit' && unit.team === this.currentPlayer) {
+        if (unit && unit.parentType() === 'Unit' && unit.team === this.currentPlayer.team) {
             unit.resetActions(); //reset newly selected unit's action squares
             if (!unit.board) { unit.board = this.board; }
 
@@ -118,7 +140,7 @@ class Game {
 
     barrackSelected(barrack) {
         this.view.drawBoard();
-        return barrack && barrack.type() === 'Barrack' && barrack.team === this.currentPlayer;
+        return barrack && barrack.type() === 'Barrack' && barrack.team === this.currentPlayer.team;
     }
 
     unitBought(pos, menu, square) {
@@ -129,6 +151,7 @@ class Game {
         if (unit = menu.find(e => e.pos.x === newPos.x && e.pos.y === newPos.y)) {
             unit.pos = square.first().pos;
             square.push(unit);
+            this.currentPlayer.units.push(unit);
             this.actionPoints -= 2;
             unitBought = true;
         }
@@ -159,11 +182,10 @@ class Game {
             unit.pos = pos; //reset unit position;
             square.pop();
             if (square.length > 0 && square.last().type() === 'Treasure'
-                && square.last().team !== this.currentPlayer) {
+                && square.last().team !== this.currentPlayer.team) {
                 console.log(pos)
                 square.last().pos = pos;
                 this.board.grid.get(pos).push(square.pop());
-                console.log(this.board.grid);
             }
             this.board.grid.get(pos).push(unit);
 
@@ -184,6 +206,7 @@ class Game {
             attackedUnit.defense -= unit.attack;
             if (attackedUnit.defense < 1) {
                 attackedSquare.pop();
+                this.currentPlayer.team === this.player.team ? this.enemy.removeUnit(attackedUnit) : this.player.removeUnit(attackedUnit);
             }
             this.actionPoints--;
 //            this.view.drawBoard();

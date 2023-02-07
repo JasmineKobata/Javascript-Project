@@ -12,7 +12,16 @@ class Board {
     static ENEMY_TEAM = 2;
 
     constructor() {
-        this.grid = Board.makeGrid();
+        let pos1 = {y: Board.GRID_HEIGHT-1, x: Math.floor(Board.GRID_WIDTH/2)}
+        let pos2 = {y: 0, x: Math.floor(Board.GRID_WIDTH/2)}
+        this.treasure = {player: new Treasure(Board.PLAYER_TEAM, pos1),
+            enemy: new Treasure(Board.ENEMY_TEAM, pos2)};
+
+        pos1 = {y: 0, x: Math.floor(Board.GRID_WIDTH/2)};
+        pos2 = {y: Board.GRID_HEIGHT-1, x: Math.floor(Board.GRID_WIDTH/2)}
+        this.base = {player: new Base(Board.PLAYER_TEAM, pos2),
+            enemy: new Base(Board.ENEMY_TEAM, pos1)};
+        this.grid = Board.makeGrid(this.treasure, this.base);
     }
 
     print() {
@@ -27,7 +36,7 @@ class Board {
         console.log(strs.join('-------\n'));
     }
 
-    static makeGrid() {
+    static makeGrid(treasure, base) {
         let grid = [];
 
         for (let i=0; i < Board.GRID_HEIGHT; i++) {
@@ -49,21 +58,27 @@ class Board {
         pos = {y: Board.GRID_HEIGHT-1, x: Board.GRID_WIDTH-1};
         grid.get(pos).push(new Barrack(Board.PLAYER_TEAM, pos));
 
-        pos = {y: 0, x: Math.floor(Board.GRID_WIDTH/2)};
-        grid.get(pos).push(new Base(Board.ENEMY_TEAM, pos));
 
-        pos = {y: Board.GRID_HEIGHT-1, x: Math.floor(Board.GRID_WIDTH/2)}
-        grid.get(pos).push(new Base(Board.PLAYER_TEAM, pos));
+        grid.get(base.enemy.pos).push(base.enemy);
+        grid.get(base.player.pos).push(base.player);
 
-        pos = {y: 0, x: Math.floor(Board.GRID_WIDTH/2)}
-        grid.get(pos).push(new Treasure(Board.ENEMY_TEAM, pos));
+        grid.get(treasure.enemy.pos).push(treasure.enemy);
+        grid.get(treasure.player.pos).push(treasure.player);
+        // pos = {y: 0, x: Math.floor(Board.GRID_WIDTH/2)};
+        // grid.get(pos).push(new Base(Board.ENEMY_TEAM, pos));
 
-        pos = {y: Board.GRID_HEIGHT-1, x: Math.floor(Board.GRID_WIDTH/2)}
-        grid.get(pos).push(new Treasure(Board.PLAYER_TEAM, pos));
+        // pos = {y: Board.GRID_HEIGHT-1, x: Math.floor(Board.GRID_WIDTH/2)}
+        // grid.get(pos).push(new Base(Board.PLAYER_TEAM, pos));
+
+        // pos = {y: 0, x: Math.floor(Board.GRID_WIDTH/2)}
+        // grid.get(pos).push(new Treasure(Board.ENEMY_TEAM, pos));
+
+        // pos = {y: Board.GRID_HEIGHT-1, x: Math.floor(Board.GRID_WIDTH/2)}
+        // grid.get(pos).push(new Treasure(Board.PLAYER_TEAM, pos));
 
         //Temp units for testing
-        pos = {y: 1, x: 3}
-        grid.get(pos).push(new Archer(Board.PLAYER_TEAM, pos));
+        // pos = {y: 1, x: 3}
+        // grid.get(pos).push(new Archer(Board.PLAYER_TEAM, pos));
         // pos = {y: 3, x: 1}
         // grid.get(pos).push(new Infantry(Board.PLAYER_TEAM, pos));
         // pos = {y: 2, x: 1}
@@ -74,6 +89,11 @@ class Board {
         // grid.get(pos).push(new Defender(Board.ENEMY_TEAM, pos));
 
         return grid;
+    }
+
+    isWon() {
+        return this.treasure.player.pos.equals(this.base.enemy.pos) ||
+            this.treasure.enemy.pos.equals(this.base.player.pos);
     }
 }
 

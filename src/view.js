@@ -1,4 +1,5 @@
 import Board from "./board";
+import Game from "./game";
 import Barrack from "./pieces/barrack";
 import Base from "./pieces/base";
 import Treasure from "./pieces/treasure";
@@ -6,7 +7,7 @@ import Unit from "./pieces/unit";
 import Archer from "./pieces/units/archer";
 import Defender from "./pieces/units/defender";
 import Infantry from "./pieces/units/infantry";
-import { isOnBoard } from "./utils";
+import { isOnBoard, isButton, willPlayAgain } from "./utils";
 
 class View {
     static SQUARE_DIM = 100;
@@ -20,6 +21,12 @@ class View {
             this.clearBoard();
             this.drawBoard();
         });*/
+    }
+
+    resetView(game) {
+        this.game = game;
+        this.ratio = null;
+        this.drawBoard();
     }
 
     clearBoard() {
@@ -46,12 +53,87 @@ class View {
             }
         }
         this.ctx.font = "40px Copperplate";
-        this.game.currentPlayer === Board.ENEMY_TEAM ? this.ctx.fillStyle = "red" : this.ctx.fillStyle = "blue";
-        let str = "Action Points: "+this.game.actionPoints.toString();
+        this.game.currentPlayer.team === Board.ENEMY_TEAM ? this.ctx.fillStyle = "red" : this.ctx.fillStyle = "blue";
+        let str = "Action Points: " + this.game.actionPoints.toString();
         this.ctx.strokeStyle = 'dimgrey';
         this.ctx.lineWidth = 3;
         this.ctx.strokeText(str, 10, (Board.GRID_HEIGHT+0.5) * View.SQUARE_DIM);
         this.ctx.fillText(str, 10, (Board.GRID_HEIGHT+0.5) * View.SQUARE_DIM);
+
+        this.ctx.font = "30px Copperplate";
+        str = "Troops: " + this.game.currentPlayer.units.length.toString() + "/8";
+        this.ctx.strokeText(str, 10, (Board.GRID_HEIGHT+0.75) * View.SQUARE_DIM);
+        this.ctx.fillText(str, 10, (Board.GRID_HEIGHT+0.75) * View.SQUARE_DIM);
+
+        this.drawEndTurnButton();
+    }
+
+    drawEndTurnButton() {
+        this.ctx.fillStyle = 'lightskyblue';        
+        this.ctx.fillRect(
+            View.SQUARE_DIM * 4,
+            (Board.GRID_HEIGHT+0.25) * View.SQUARE_DIM,
+            View.SQUARE_DIM * 1,
+            View.SQUARE_DIM * 0.5);
+        this.ctx.strokeStyle = 'cornflowerblue';
+        this.ctx.lineWidth = 1;
+        this.ctx.strokeRect(
+            View.SQUARE_DIM * 4,
+            (Board.GRID_HEIGHT+0.25) * View.SQUARE_DIM,
+            View.SQUARE_DIM * 1,
+            View.SQUARE_DIM * 0.5);
+        this.ctx.font = "25px Copperplate";
+        this.ctx.fillStyle = "dimgrey";
+        this.ctx.lineWidth = 2;
+        this.ctx.fillText("End", 4.25 * View.SQUARE_DIM, (Board.GRID_HEIGHT+0.45) * View.SQUARE_DIM);
+        this.ctx.fillText("Turn", 4.15 * View.SQUARE_DIM, (Board.GRID_HEIGHT+0.65) * View.SQUARE_DIM);
+    }
+
+    drawWinningScreen() {
+        this.ctx.fillStyle = 'lightskyblue';
+        
+        this.ctx.fillRect(
+            View.SQUARE_DIM * Math.floor((Board.GRID_WIDTH-2) / 2),
+            View.SQUARE_DIM * (Math.floor((Board.GRID_HEIGHT-2) / 2)+0.25),
+            View.SQUARE_DIM * 3,
+            View.SQUARE_DIM * 1.5);
+        this.ctx.strokeStyle = 'cornflowerblue';
+        this.ctx.lineWidth = 1;
+        this.ctx.strokeRect(
+            View.SQUARE_DIM * Math.floor((Board.GRID_WIDTH-2)/ 2),
+            View.SQUARE_DIM * (Math.floor((Board.GRID_HEIGHT-2) / 2)+0.25),
+            View.SQUARE_DIM * 3,
+            View.SQUARE_DIM * 1.5);
+
+
+        this.ctx.font = "30px Copperplate";
+        this.ctx.fillStyle = "dimgrey";
+        this.ctx.lineWidth = 3;
+        let str = "";
+        console.log(this.currentPlayer)
+        this.game.currentPlayer.team === Board.PLAYER_TEAM ? str += "Blue" : str += "Red";
+        str += " Won!"
+        this.ctx.fillText(str,
+            View.SQUARE_DIM * (Board.GRID_WIDTH / 2 - 0.75),
+            View.SQUARE_DIM * (Board.GRID_HEIGHT / 2 - 0.25));
+        
+        this.drawPlayAgainButton();
+    }
+
+    drawPlayAgainButton() {
+        this.ctx.fillStyle = 'cornflowerblue';        
+        this.ctx.fillRect(
+            View.SQUARE_DIM * (Board.GRID_WIDTH / 2 - 0.75),
+            View.SQUARE_DIM * (Math.floor((Board.GRID_HEIGHT) / 2)),
+            View.SQUARE_DIM * 1.5,
+            View.SQUARE_DIM * 0.5);
+        this.ctx.strokeStyle = 'cornflowerblue';
+        this.ctx.lineWidth = 1;
+        this.ctx.font = "24px Copperplate";
+        this.ctx.fillStyle = "white";
+        this.ctx.fillText("Play Again?",
+            View.SQUARE_DIM * (Board.GRID_WIDTH / 2 - 0.70),
+            View.SQUARE_DIM * (Board.GRID_HEIGHT / 2 + 0.3));
     }
 
     drawBarrackSelection(pos) {
@@ -80,9 +162,9 @@ class View {
             View.SQUARE_DIM * (newPos.y + 0.35));
 
         let troopSelection = [];
-        troopSelection.push(new Infantry(this.game.currentPlayer, {y: newPos.y+0.5, x: newPos.x}));
-        troopSelection.push(new Archer(this.game.currentPlayer, {y: newPos.y+0.5, x: newPos.x+1}));
-        troopSelection.push(new Defender(this.game.currentPlayer, {y: newPos.y+0.5, x: newPos.x+2}));
+        troopSelection.push(new Infantry(this.game.currentPlayer.team, {y: newPos.y+0.5, x: newPos.x}));
+        troopSelection.push(new Archer(this.game.currentPlayer.team, {y: newPos.y+0.5, x: newPos.x+1}));
+        troopSelection.push(new Defender(this.game.currentPlayer.team, {y: newPos.y+0.5, x: newPos.x+2}));
         troopSelection.forEach( (unit) => {
             unit.draw(this.ctx);
         });
@@ -150,10 +232,22 @@ class View {
         let yExact = event.offsetY / (View.SQUARE_DIM * this.ratio);
         let pos = {y, x};
         let posExact = {y: yExact, x: xExact};
-        if (isOnBoard(pos)) {
-            this.game.ctx.clickedPos = pos
-            this.game.ctx.exactPos = posExact;
-            this.game.stateMachine();
+        console.log(this.game.board.treasure)
+        if (this.game.board.isWon()) {
+            this.drawWinningScreen();
+            if (willPlayAgain(posExact)) {
+                this.game.resetGame(this);
+                this.drawBoard();
+            }
+        } else {
+            if (isOnBoard(pos)) {
+                this.game.ctx.clickedPos = pos
+                this.game.ctx.exactPos = posExact;
+                this.game.stateMachine();
+            } else if (isButton(posExact)) {
+                this.game.switchPlayers();
+                this.drawBoard();
+            }
         }
     }
 }
