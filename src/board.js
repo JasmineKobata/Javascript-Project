@@ -66,17 +66,6 @@ class Board {
 
         grid.get(treasure.enemy.pos).push(treasure.enemy);
         grid.get(treasure.player.pos).push(treasure.player);
-        // pos = {y: 0, x: Math.floor(Board.GRID_WIDTH/2)};
-        // grid.get(pos).push(new Base(Board.ENEMY_TEAM, pos));
-
-        // pos = {y: Board.GRID_HEIGHT-1, x: Math.floor(Board.GRID_WIDTH/2)}
-        // grid.get(pos).push(new Base(Board.PLAYER_TEAM, pos));
-
-        // pos = {y: 0, x: Math.floor(Board.GRID_WIDTH/2)}
-        // grid.get(pos).push(new Treasure(Board.ENEMY_TEAM, pos));
-
-        // pos = {y: Board.GRID_HEIGHT-1, x: Math.floor(Board.GRID_WIDTH/2)}
-        // grid.get(pos).push(new Treasure(Board.PLAYER_TEAM, pos));
 
         //Temp units for testing
         // pos = {y: 6, x: 3}

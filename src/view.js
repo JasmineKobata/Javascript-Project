@@ -30,11 +30,12 @@ class View {
     }
 
     clearBoard() {
+        console.log("board cleared");
         this.ctx.clearRect(0, 0, this.ctx.canvas.width, this.ctx.canvas.height);
     }
 
-    drawBoard(unitPos, clickedPos) {
-        this.clearBoard();
+    drawBoard(unitPos, clickedPos, drawFunction, ...args) {
+//        this.clearBoard();
         let pixelWidth = Board.GRID_WIDTH * View.SQUARE_DIM;
         let pixelHeight = (Board.GRID_HEIGHT+1) * View.SQUARE_DIM;
         this.ctx.canvas.width = pixelWidth;
@@ -45,30 +46,49 @@ class View {
         )
         this.ctx.scale(this.ratio, this.ratio);
 
-        for (let y=0; y < Board.GRID_HEIGHT; y++) {
-            for (let x=0; x < Board.GRID_WIDTH; x++) {
-                this.drawGridSquare(x, y, "forestgreen", "darkgreen");
+        let img = new Image();
+        img.src = "./resources/grass2.png";
+        img.onload = () => {
+            this.ctx.drawImage(
+               img, 0, 0,
+               pixelWidth, pixelHeight,
+               0, 0,
+               pixelWidth, pixelHeight,);
+            this.ctx.beginPath();
+            this.ctx.stroke();
 
-                this.drawGridElems({y: y, x: x}, unitPos, clickedPos);
-            }
-        }
+            this.drawBoardElems(unitPos, clickedPos);
+            if (drawFunction) { drawFunction(...args); }
 
-        this.ctx.font = "40px Copperplate";
-        this.game.currentPlayer.team === Board.ENEMY_TEAM ? this.ctx.fillStyle = "red" : this.ctx.fillStyle = "blue";
-        let str = "Action Points: " + this.game.actionPoints.toString();
-        this.ctx.strokeStyle = 'dimgrey';
-        this.ctx.lineWidth = 3;
-        this.ctx.strokeText(str, 10, (Board.GRID_HEIGHT+0.5) * View.SQUARE_DIM);
-        this.ctx.fillText(str, 10, (Board.GRID_HEIGHT+0.5) * View.SQUARE_DIM);
+            this.ctx.font = "40px Copperplate";
+            this.game.currentPlayer.team === Board.ENEMY_TEAM ? this.ctx.fillStyle = "red" : this.ctx.fillStyle = "blue";
+            let str = "Action Points: " + this.game.actionPoints.toString();
+            this.ctx.strokeStyle = 'dimgrey';
+            this.ctx.lineWidth = 3;
+            this.ctx.strokeText(str, 10, (Board.GRID_HEIGHT+0.5) * View.SQUARE_DIM);
+            this.ctx.fillText(str, 10, (Board.GRID_HEIGHT+0.5) * View.SQUARE_DIM);
+   
+            this.ctx.font = "30px Copperplate";
+            str = "Troops: " + this.game.currentPlayer.units.length.toString() + "/8";
+            this.ctx.strokeText(str, 10, (Board.GRID_HEIGHT+0.75) * View.SQUARE_DIM);
+            this.ctx.fillText(str, 10, (Board.GRID_HEIGHT+0.75) * View.SQUARE_DIM);
+        };
+        console.log("Board redrawn")
+        return img;
+    }
 
-        this.ctx.font = "30px Copperplate";
-        str = "Troops: " + this.game.currentPlayer.units.length.toString() + "/8";
-        this.ctx.strokeText(str, 10, (Board.GRID_HEIGHT+0.75) * View.SQUARE_DIM);
-        this.ctx.fillText(str, 10, (Board.GRID_HEIGHT+0.75) * View.SQUARE_DIM);
+    drawBoardElems(unitPos, clickedPos) {
+         for (let y=0; y < Board.GRID_HEIGHT; y++) {
+             for (let x=0; x < Board.GRID_WIDTH; x++) {
+                 this.drawGridSquare(x, y, "darkgreen");
+                 this.drawGridElems({y: y, x: x}, unitPos, clickedPos);
+             }
+         }
 
-        this.drawEndTurnButton();
 
-        this.drawMidline();
+         this.drawEndTurnButton();
+
+         this.drawMidline();
     }
 
     drawMidline() {
@@ -101,8 +121,8 @@ class View {
     }
 
     drawWinningScreen() {
-        console.log("DRAW WIN SCREEN")
         let img = new Image();
+        img.src = './resources/wood.png';
         img.onload = () => {
             this.ctx.drawImage(
                 img,
@@ -134,7 +154,6 @@ class View {
             
             this.drawPlayAgainButton();
         };
-        img.src = './resources/wood.png';
     }
 
     drawPlayAgainButton() {
@@ -186,10 +205,12 @@ class View {
     }
 
     drawBarrackSelection(pos) {
-         let newPos = this.adjustMenuPosition(pos);
+        console.log("Barrack drawn")
+        let newPos = this.adjustMenuPosition(pos);
         this.team === Board.ENEMY_TEAM ? this.ctx.fillStyle = "red" : this.ctx.fillStyle = "blue";
         let troopSelection = [];
         let img = new Image();
+        img.src = './resources/wood.png';
         img.onload = () => {
             this.ctx.drawImage(
                 img,
@@ -210,10 +231,9 @@ class View {
             troopSelection.push(new Archer(this.game.currentPlayer.team, {y: newPos.y+0.5, x: newPos.x+1}));
             troopSelection.push(new Defender(this.game.currentPlayer.team, {y: newPos.y+0.5, x: newPos.x+2}));
             troopSelection.forEach( (unit) => {
-                unit.draw(this.ctx);
+                unit.draw(this.ctx, this.game.currentPlayer);
             });
         };
-        img.src = './resources/wood.png';
         return troopSelection;
     }
 
@@ -236,36 +256,41 @@ class View {
     }
 
     drawMoveHighlights(pos) {
-        this.drawGridSquare(pos.x, pos.y, "mediumseagreen", 'seagreen');
+        this.drawGridSquare(pos.x, pos.y, 'seagreen', "mediumseagreen");
     }
 
     drawAttackHighlights(pos) {
-        this.drawGridSquare(pos.x, pos.y, "lightskyblue", "cornflowerblue")
+        this.drawGridSquare(pos.x, pos.y, "cornflowerblue", "lightskyblue")
     }
 
     drawGridElems(pos, unitPos, clickedPos) {
         let gridSquare = this.game.board.grid.get(pos);
         for (let i=0; i < gridSquare.length; i++) {
-            gridSquare[i].draw(this.ctx, unitPos, clickedPos);
+            gridSquare[i].draw(this.ctx, this.game.currentPlayer, unitPos, clickedPos);
         }
         this.ctx.beginPath();
     }
 
-    drawGridSquare(x, y, fillColor, outlineColor) {
-        this.ctx.fillStyle = fillColor;
-        this.ctx.fillRect(
-            View.SQUARE_DIM * x,
-            View.SQUARE_DIM * y,
-            View.SQUARE_DIM,
-            View.SQUARE_DIM);
+    drawGridSquare(x, y, outlineColor, fillColor) {
+        if (fillColor) {
+            this.ctx.fillStyle = fillColor;
+            this.ctx.globalAlpha = 0.5;
+            this.ctx.fillRect(
+                View.SQUARE_DIM * x,
+                View.SQUARE_DIM * y,
+                View.SQUARE_DIM,
+                View.SQUARE_DIM
+            )
+        }
         this.ctx.strokeStyle = outlineColor;
-        this.ctx.lineWidth = 1;
+        this.ctx.lineWidth = 2;
         this.ctx.strokeRect(
             View.SQUARE_DIM * x,
             View.SQUARE_DIM * y,
             View.SQUARE_DIM,
             View.SQUARE_DIM
         )
+        this.ctx.globalAlpha = 1;
     }
 
     bindEvents(ctx) {
@@ -394,7 +419,7 @@ export function drawUpgradeConfirmation(ctx, pos) {
         View.SQUARE_DIM * (pos.y + 0.25));
 }
 
-Unit.prototype.draw = function(ctx, unitPos, clickedPos) {
+Unit.prototype.draw = function(ctx, currentPlayer, unitPos, clickedPos) {
     this.team === Board.ENEMY_TEAM ? ctx.fillStyle = "red" : ctx.fillStyle = "blue";
     this.image.onload = () => {
         ctx.drawImage(
@@ -405,7 +430,7 @@ Unit.prototype.draw = function(ctx, unitPos, clickedPos) {
         ctx.beginPath();
         ctx.stroke();
         drawStats(this, ctx, this.pos.x, this.pos.y);
-        if (this.isUpgradable()) {
+        if (this.isUpgradable(currentPlayer)) {
             drawUpgradeButton(this, ctx, this.pos.x, this.pos.y);
             if (unitPos && clickedPos) {
                 drawUpgradeConfirmation(ctx, unitPos);

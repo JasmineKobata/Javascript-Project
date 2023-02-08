@@ -45,11 +45,10 @@ class Game {
     //ctx -> {clickedPos always set, selectedSquare that will be set in unselected stage}
     stateMachine() {
         let square = this.board.grid.get(this.ctx.clickedPos);
-       // console.log(this.state, square)
+        console.log(this.state)
         switch (this.state) {
             case 'unselected':
                 //if unit upgrade is selected
-                console.log("A");
                 if (this.unitUpgradeable(this.ctx.exactPos, square.last())) {
                     this.ctx.selectedSquare = square;
                     this.state = 'upgrade';
@@ -61,6 +60,7 @@ class Game {
                 else if (this.actionPoints > 1 && this.currentPlayer.units.length < 8
                     && this.barrackSelected(square.first())) {
                     this.ctx.menu = this.view.drawBarrackSelection(square.first().pos);
+                    
                     this.ctx.selectedSquare = square;
                     this.state = 'barrack';
                 }
@@ -68,9 +68,9 @@ class Game {
             case 'unit':
                 //if action taken
                 if (this.actionTaken(this.ctx.clickedPos, this.ctx.selectedSquare)) {
-                    console.log("B");
                     this.ctx = {};
                     this.state = 'unselected';
+                    this.view.drawBoard();
                     if (this.board.isWon()) {
                         this.view.drawBoard();
                         this.view.drawWinningScreen();
@@ -80,7 +80,7 @@ class Game {
                     }
                 } //else if action not taken
                 else {
-                    console.log("C");
+                    this.view.drawBoard();
                     if (this.unitUpgradeable(this.ctx.exactPos, square.last())) {
                         this.state = 'upgrade'
                     }
@@ -99,14 +99,13 @@ class Game {
             case 'barrack':
                 //if unit is bought
                 if (this.unitBought(this.ctx.exactPos, this.ctx.menu, this.ctx.selectedSquare)) {
-                    console.log("D");
                     this.ctx = {};
                     this.state = 'unselected';
                     if (this.actionPoints === 0) { this.switchPlayers(); }
                     this.view.drawBoard();
                 } //else if unit is not bought
                 else {
-                    console.log("E");
+                    this.view.drawBoard();
                     if (this.unitUpgradeable(this.ctx.exactPos, square.last())) {
                         this.state = 'upgrade'
                     }
@@ -129,6 +128,7 @@ class Game {
                     this.view.drawBoard();
                 }
                 else {
+                    this.view.drawBoard();
                     //if another unit upgrade is selected
                     if (this.unitUpgradeable(this.ctx.exactPos, square.last())) {
                     } //else if a unit is selected
@@ -153,8 +153,7 @@ class Game {
     unitUpgradeable(pos, unit) {
         let unitUpgradeable = false;
         if (this.actionPoints > 1 && unit && unit.parentType() === 'Unit' &&
-            unit.team === this.currentPlayer.team &&
-            unit.isUpgradable() && isUpgradeButton(unit.pos, pos)) {
+            unit.isUpgradable(this.currentPlayer) && isUpgradeButton(unit.pos, pos)) {
                 unitUpgradeable = true;
                 this.view.drawBoard(unit.pos, pos);
         }
@@ -165,8 +164,7 @@ class Game {
         let unitUpgraded = false;
         let unit = square.last();
         if (unit && unit.parentType() === 'Unit' &&
-            unit.team === this.currentPlayer.team &&
-            unit.isUpgradable() && isUpgradeConfirmation(unit.pos, pos)) {
+            unit.isUpgradable(this.currentPlayer) && isUpgradeConfirmation(unit.pos, pos)) {
                 unit.upgrades();
                 this.actionPoints -= 2;
                 unitUpgraded = true;
@@ -176,31 +174,33 @@ class Game {
 
     unitSelected(unit) {
         let unitSelected = false;
-        this.view.drawBoard();
         if (unit && unit.parentType() === 'Unit' && unit.team === this.currentPlayer.team) {
             unit.resetActions(); //reset newly selected unit's action squares
             if (!unit.board) { unit.board = this.board; }
 
-            if (!unit.hasMoved) {
-                unit.getMoves().forEach((pos) => {
-                    this.view.drawMoveHighlights(pos);
-                    this.view.drawGridElems(pos);
-                });
-            }
-            if (!unit.hasAttacked && !unit.hasUpgraded) {
-                unit.getAttacks().forEach((pos) => {
-                    this.view.drawAttackHighlights(pos);
-                    this.view.drawGridElems(pos);
-                })
-            }
-            this.view.drawOutline(unit.pos);
+            this.view.drawBoard(null, null, this.unitCallDrawSelected, unit, this.view);
             unitSelected = true;
         }
         return unitSelected;
     }
 
+    unitCallDrawSelected(unit, view) {
+        if (!unit.hasMoved) {
+            unit.getMoves().forEach((pos) => {
+                view.drawMoveHighlights(pos);
+                view.drawGridElems(pos);
+            });
+        }
+        if (!unit.hasAttacked && !unit.hasUpgraded) {
+            unit.getAttacks().forEach((pos) => {
+                view.drawAttackHighlights(pos);
+                view.drawGridElems(pos);
+            })
+        }
+        view.drawOutline(unit.pos);
+    }
+
     barrackSelected(barrack) {
-        //this.view.drawBoard();
         return barrack && barrack.type() === 'Barrack' && barrack.team === this.currentPlayer.team;
     }
 
@@ -214,7 +214,6 @@ class Game {
             this.currentPlayer.units.push(unit);
             this.actionPoints -= 2;
             unitBought = true;
-            console.log(this.currentPlayer.team, this.currentPlayer.units);
         }
 
         return unitBought;
@@ -253,7 +252,6 @@ class Game {
             this.board.grid.get(pos).push(unit);
 
             this.actionPoints--;
-//            this.view.drawBoard();
             unit.hasMoved = true;
             unitMoved = true;
         }
@@ -272,7 +270,6 @@ class Game {
                 this.currentPlayer.team === this.player.team ? this.enemy.removeUnit(attackedUnit) : this.player.removeUnit(attackedUnit);
             }
             this.actionPoints--;
-//            this.view.drawBoard();
             unit.hasAttacked = true;
             unitAttacked = true;
         }

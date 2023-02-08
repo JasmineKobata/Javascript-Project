@@ -87,8 +87,9 @@ class Unit extends Piece {
         return false;
     }
 
-    isUpgradable() {
-        return this.attack === this.pointStandard.attack &&
+    isUpgradable(currentPlayer) {
+        return this.team === currentPlayer.team &&
+            this.attack === this.pointStandard.attack &&
             ((this.team === Board.PLAYER_TEAM && this.pos.y < Board.GRID_HEIGHT / 2) ||
             (this.team === Board.ENEMY_TEAM && this.pos.y >= Board.GRID_HEIGHT / 2));
     }
