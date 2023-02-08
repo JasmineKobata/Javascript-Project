@@ -77,11 +77,11 @@ class Board {
         // grid.get(pos).push(new Treasure(Board.PLAYER_TEAM, pos));
 
         //Temp units for testing
-        // pos = {y: 1, x: 3}
+        // pos = {y: 3, x: 2}
         // grid.get(pos).push(new Archer(Board.PLAYER_TEAM, pos));
-        // pos = {y: 3, x: 1}
-        // grid.get(pos).push(new Infantry(Board.PLAYER_TEAM, pos));
-        // pos = {y: 2, x: 1}
+        // pos = {y: 4, x: 1}
+        // grid.get(pos).push(new Infantry(Board.ENEMY_TEAM, pos));
+        // pos = {y: 3, x: 4}
         // grid.get(pos).push(new Archer(Board.PLAYER_TEAM, pos));
         // pos = {y: 4, x: 1}
         // grid.get(pos).push(new Archer(Board.PLAYER_TEAM, pos));

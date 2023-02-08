@@ -7,17 +7,32 @@ class Unit extends Piece {
         super(team, pos);
         this.attack = null;
         this.defense = null;
+        this.pointStandard = null;
+        this.upgrade = null;
         this.attackDist = 1;
         this.moves = null;
         this.attacks = [];
         this.hasMoved = false;
         this.hasAttacked = false;
+        this.hasUpgraded = false;
         this.board = null;
     }
 
     resetActions() {
         this.moves = null;
         this.attacks = [];
+    }
+
+    upgrades() {
+        this.hasUpgraded = true;
+        this.attack = this.upgrade.attack;
+        this.defense = this.upgrade.defense;
+    }
+
+    downgrade() {
+        this.hasUpgraded = false;
+        this.attack = this.pointStandard.attack;
+        this.defense = Math.min(this.pointStandard.defense, this.defense);
     }
 
     getMoves() {
@@ -71,6 +86,17 @@ class Unit extends Piece {
             }
         }
         return false;
+    }
+
+    isUpgradable() {
+        return !this.hasUpgraded &&
+            ((this.team === Board.PLAYER_TEAM && this.pos.y < Board.GRID_HEIGHT / 2) ||
+            (this.team === Board.ENEMY_TEAM && this.pos.y >= Board.GRID_HEIGHT / 2));
+    }
+
+    onHomeTerf() {
+        return (this.team === Board.PLAYER_TEAM && this.pos.y >= Board.GRID_HEIGHT / 2) ||
+            (this.team === Board.ENEMY_TEAM && this.pos.y < Board.GRID_HEIGHT / 2);
     }
 }
 

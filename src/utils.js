@@ -11,14 +11,23 @@ export function isButton(pos) {
 }
 
 export function willPlayAgain(pos) {
-    console.log(pos.x > Board.GRID_WIDTH / 2 - 0.75 &&
-    pos.x < Board.GRID_WIDTH / 2 + 0.75 &&
-    pos.y > Math.floor((Board.GRID_HEIGHT) / 2) &&
-    pos.y < Math.floor((Board.GRID_HEIGHT) / 2) + 0.5)
      return pos.x > Board.GRID_WIDTH / 2 - 0.75 &&
         pos.x < Board.GRID_WIDTH / 2 + 0.75 &&
         pos.y > Math.floor((Board.GRID_HEIGHT) / 2) &&
         pos.y < Math.floor((Board.GRID_HEIGHT) / 2) + 0.5;
+}
+
+export function isUpgradeButton(squarePos, clickPos) {
+    let x = clickPos.x - squarePos.x;
+    let y = clickPos.y - squarePos.y;
+
+    return x > 0 && x < 0.25 && y > 0 && y < 0.25;
+}
+
+export function isUpgradeConfirmation(squarePos, clickPos) {
+    let x = clickPos.x - squarePos.x;
+    let y = clickPos.y - squarePos.y;
+    return x > 0 && x < 1 && y > 0 && y < 0.25;
 }
 
 Array.prototype.get = function(pos) {

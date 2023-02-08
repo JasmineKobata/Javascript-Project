@@ -33,7 +33,7 @@ class View {
         this.ctx.clearRect(0, 0, this.ctx.canvas.width, this.ctx.canvas.height);
     }
 
-    drawBoard() {
+    drawBoard(unitPos, clickedPos) {
         this.clearBoard();
         let pixelWidth = Board.GRID_WIDTH * View.SQUARE_DIM;
         let pixelHeight = (Board.GRID_HEIGHT+1) * View.SQUARE_DIM;
@@ -49,7 +49,7 @@ class View {
             for (let x=0; x < Board.GRID_WIDTH; x++) {
                 this.drawGridSquare(x, y, "forestgreen", "darkgreen");
 
-                this.drawGridElems({y: y, x: x});
+                this.drawGridElems({y: y, x: x}, unitPos, clickedPos);
             }
         }
         this.ctx.font = "40px Copperplate";
@@ -91,7 +91,6 @@ class View {
 
     drawWinningScreen() {
         this.ctx.fillStyle = 'lightskyblue';
-        
         this.ctx.fillRect(
             View.SQUARE_DIM * Math.floor((Board.GRID_WIDTH-2) / 2),
             View.SQUARE_DIM * (Math.floor((Board.GRID_HEIGHT-2) / 2)+0.25),
@@ -110,7 +109,6 @@ class View {
         this.ctx.fillStyle = "dimgrey";
         this.ctx.lineWidth = 3;
         let str = "";
-        console.log(this.currentPlayer)
         this.game.currentPlayer.team === Board.PLAYER_TEAM ? str += "Blue" : str += "Red";
         str += " Won!"
         this.ctx.fillText(str,
@@ -136,38 +134,58 @@ class View {
             View.SQUARE_DIM * (Board.GRID_HEIGHT / 2 + 0.3));
     }
 
-    drawBarrackSelection(pos) {
-        this.ctx.fillStyle = 'lightskyblue';
-        let newPos = this.adjustMenuPosition(pos);
-        
+    drawUpgradeConfirmation(pos) {
+        console.log("upgrade button")
+        this.ctx.fillStyle = 'lightskyblue';        
         this.ctx.fillRect(
-            View.SQUARE_DIM * newPos.x,
-            View.SQUARE_DIM * newPos.y,
-            View.SQUARE_DIM * 3,
-            View.SQUARE_DIM * 1.5);
+            View.SQUARE_DIM * pos.x,
+            View.SQUARE_DIM * pos.y,
+            View.SQUARE_DIM * 1,
+            View.SQUARE_DIM * 0.35);
         this.ctx.strokeStyle = 'cornflowerblue';
-        this.ctx.lineWidth = 1;
         this.ctx.strokeRect(
-            View.SQUARE_DIM * newPos.x,
-            View.SQUARE_DIM * newPos.y,
-            View.SQUARE_DIM * 3,
-            View.SQUARE_DIM * 1.5);
-
-
-        this.ctx.font = "30px Copperplate";
+            View.SQUARE_DIM * pos.x,
+            View.SQUARE_DIM * pos.y,
+            View.SQUARE_DIM * 1,
+            View.SQUARE_DIM * 0.35);
+        this.ctx.lineWidth = 1;
+        this.ctx.font = "20px Copperplate";
         this.ctx.fillStyle = "dimgrey";
-        this.ctx.lineWidth = 3;
-        this.ctx.fillText("Buy New Troop?",
-            View.SQUARE_DIM * (newPos.x + 0.35),
-            View.SQUARE_DIM * (newPos.y + 0.35));
+        this.ctx.fillText("Upgrade?",
+            View.SQUARE_DIM * pos.x,
+            View.SQUARE_DIM * (pos.y + 0.25));
+    }
 
+    drawBarrackSelection(pos) {
+         let newPos = this.adjustMenuPosition(pos);
+        this.team === Board.ENEMY_TEAM ? this.ctx.fillStyle = "red" : this.ctx.fillStyle = "blue";
         let troopSelection = [];
-        troopSelection.push(new Infantry(this.game.currentPlayer.team, {y: newPos.y+0.5, x: newPos.x}));
-        troopSelection.push(new Archer(this.game.currentPlayer.team, {y: newPos.y+0.5, x: newPos.x+1}));
-        troopSelection.push(new Defender(this.game.currentPlayer.team, {y: newPos.y+0.5, x: newPos.x+2}));
-        troopSelection.forEach( (unit) => {
-            unit.draw(this.ctx);
-        });
+        let img = new Image();
+        img.onload = () => {
+            this.ctx.drawImage(
+                img,
+                View.SQUARE_DIM * newPos.x,
+                View.SQUARE_DIM * newPos.y,
+                View.SQUARE_DIM * 3, View.SQUARE_DIM * 1.5);
+            this.ctx.beginPath();
+            this.ctx.stroke();
+
+            this.ctx.font = "30px Copperplate";
+            this.ctx.fillStyle = "white";
+            this.ctx.lineWidth = 3;
+            this.ctx.fillText("Buy New Troop?",
+                View.SQUARE_DIM * (newPos.x + 0.35),
+                View.SQUARE_DIM * (newPos.y + 0.35));
+    
+            troopSelection.push(new Infantry(this.game.currentPlayer.team, {y: newPos.y+0.5, x: newPos.x}));
+            troopSelection.push(new Archer(this.game.currentPlayer.team, {y: newPos.y+0.5, x: newPos.x+1}));
+            troopSelection.push(new Defender(this.game.currentPlayer.team, {y: newPos.y+0.5, x: newPos.x+2}));
+            troopSelection.forEach( (unit) => {
+                unit.draw(this.ctx);
+            });
+        };
+        img.src = './resources/wood.png';
+        console.log("draw board")
         return troopSelection;
     }
 
@@ -197,11 +215,13 @@ class View {
         this.drawGridSquare(pos.x, pos.y, "lightskyblue", "cornflowerblue")
     }
 
-    drawGridElems(pos) {
+    drawGridElems(pos, unitPos, clickedPos) {
         let gridSquare = this.game.board.grid.get(pos);
         for (let i=0; i < gridSquare.length; i++) {
-            gridSquare[i].draw(this.ctx, pos.x, pos.y);
+            gridSquare[i].draw(this.ctx, unitPos, clickedPos);
         }
+        this.ctx.beginPath();
+        console.log("draw grid")
     }
 
     drawGridSquare(x, y, fillColor, outlineColor) {
@@ -232,7 +252,7 @@ class View {
         let yExact = event.offsetY / (View.SQUARE_DIM * this.ratio);
         let pos = {y, x};
         let posExact = {y: yExact, x: xExact};
-        console.log(this.game.board.treasure)
+
         if (this.game.board.isWon()) {
             this.drawWinningScreen();
             if (willPlayAgain(posExact)) {
@@ -252,15 +272,20 @@ class View {
     }
 }
 
-function drawDot(unit, ctx, x, y) {
+function drawUpgradeButton(unit, ctx, x, y) {
     unit.team === Board.ENEMY_TEAM ? ctx.fillStyle = "red" : ctx.fillStyle = "blue";
     ctx.beginPath();
     ctx.arc(
-        View.SQUARE_DIM * x + View.SQUARE_DIM * .50,
-        View.SQUARE_DIM * y + View.SQUARE_DIM * .50,
+        View.SQUARE_DIM * x + View.SQUARE_DIM * .15,
+        View.SQUARE_DIM * y + View.SQUARE_DIM * .15,
         View.SQUARE_DIM * .1,
         0, 2.0 * Math.PI);
     ctx.fill();
+
+    ctx.fillStyle = "white";
+    ctx.font = "30px Copperplate";
+    ctx.fillText("+", View.SQUARE_DIM * x + View.SQUARE_DIM * 0.06,
+    View.SQUARE_DIM * y + View.SQUARE_DIM * .22);
 }
 
 function drawStats(unit, ctx, x, y) {
@@ -321,7 +346,28 @@ Treasure.prototype.draw = function(ctx) {
         View.SQUARE_DIM * .30);
 }
 
-Unit.prototype.draw = function(ctx) {
+export function drawUpgradeConfirmation(ctx, pos) {
+    ctx.fillStyle = 'lightskyblue';        
+    ctx.fillRect(
+        View.SQUARE_DIM * pos.x,
+        View.SQUARE_DIM * pos.y,
+        View.SQUARE_DIM * 1,
+        View.SQUARE_DIM * 0.35);
+    ctx.strokeStyle = 'cornflowerblue';
+    ctx.strokeRect(
+        View.SQUARE_DIM * pos.x,
+        View.SQUARE_DIM * pos.y,
+        View.SQUARE_DIM * 1,
+        View.SQUARE_DIM * 0.35);
+    ctx.lineWidth = 1;
+    ctx.font = "20px Copperplate";
+    ctx.fillStyle = "dimgrey";
+    ctx.fillText("Upgrade?",
+        View.SQUARE_DIM * pos.x,
+        View.SQUARE_DIM * (pos.y + 0.25));
+}
+
+Unit.prototype.draw = function(ctx, unitPos, clickedPos) {
     this.team === Board.ENEMY_TEAM ? ctx.fillStyle = "red" : ctx.fillStyle = "blue";
     this.image.onload = () => {
         ctx.drawImage(
@@ -331,11 +377,15 @@ Unit.prototype.draw = function(ctx) {
             View.SQUARE_DIM, View.SQUARE_DIM);
         ctx.beginPath();
         ctx.stroke();
-    //    drawDot(this, ctx, x, y);
+        if (this.isUpgradable()) {
+            drawUpgradeButton(this, ctx, this.pos.x, this.pos.y);
+            if (unitPos && clickedPos) {
+                drawUpgradeConfirmation(ctx, unitPos);
+            }
+        }
         drawStats(this, ctx, this.pos.x, this.pos.y);
     };
     this.image.src = this.image.src;
-    
 }
 
 export default View;

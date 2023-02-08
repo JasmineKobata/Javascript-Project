@@ -6,6 +6,8 @@ class Archer extends Unit {
         this.attack = 1;
         this.defense = 1;
         this.attackDist = 2;
+        this.upgrade = {attack: 2, defense: 2}
+        this.pointStandard = {attack: 1, defense: 1}
         this.image.src = "./resources/archer.png";
     }
 }

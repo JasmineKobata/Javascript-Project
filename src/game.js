@@ -1,5 +1,7 @@
 import Board from "./board";
 import HumanPlayer from "./humanPlayer";
+import { isUpgradeButton, isUpgradeConfirmation } from "./utils";
+import { drawUpgradeConfirmation } from "./view";
 
 class Game {
     constructor() {
@@ -43,11 +45,16 @@ class Game {
     //ctx -> {clickedPos always set, selectedSquare that will be set in unselected stage}
     stateMachine() {
         let square = this.board.grid.get(this.ctx.clickedPos);
+       // console.log(this.state, square)
         switch (this.state) {
             case 'unselected':
-                //if unit is selected
+                //if unit upgrade is selected
                 console.log("A");
-                if (this.unitSelected(square.last())) {
+                if (this.unitUpgradeable(this.ctx.exactPos, square.last())) {
+                    this.ctx.selectedSquare = square;
+                    this.state = 'upgrade';
+                } //if unit is selected
+                else if (this.unitSelected(square.last())) {
                     this.ctx.selectedSquare = square;
                     this.state = 'unit';
                 } //else if barrack is selected
@@ -74,7 +81,10 @@ class Game {
                 } //else if action not taken
                 else {
                     console.log("C");
-                    if (this.unitSelected(square.last())) {}
+                    if (this.unitUpgradeable(this.ctx.exactPos, square.last())) {
+                        this.state = 'upgrade'
+                    }
+                    else if (this.unitSelected(square.last())) {}
                     else if (this.actionPoints > 1 && this.currentPlayer.units.length < 8
                         && this.barrackSelected(square.first())) {
                         this.ctx.menu = this.view.drawBarrackSelection(square.first().pos);
@@ -97,7 +107,10 @@ class Game {
                 } //else if unit is not bought
                 else {
                     console.log("E");
-                    if (this.unitSelected(square.last())) {
+                    if (this.unitUpgradeable(this.ctx.exactPos, square.last())) {
+                        this.state = 'upgrade'
+                    }
+                    else if (this.unitSelected(square.last())) {
                         this.state = 'unit';
                     }
                     else if (this.barrackSelected(square.first())) {
@@ -108,9 +121,56 @@ class Game {
                     this.ctx.selectedSquare = square;
                 }
                 break;
+            case 'upgrade':
+                //if unit is upgraded
+                if (this.unitUpgraded(this.ctx.exactPos, this.ctx.selectedSquare)) {
+                    this.view.drawBoard();
+                    this.state = 'unselected';
+                }
+                else {
+                    //if another unit upgrade is selected
+                    if (this.unitUpgradeable(this.ctx.exactPos, square.last())) {
+                    } //else if a unit is selected
+                    else if (this.unitSelected(square.last())) {
+                        this.state = 'unit';
+                    } //else if a barrack is selected
+                    else if (this.actionPoints > 1 && this.currentPlayer.units.length < 8
+                        && this.barrackSelected(square.first())) {
+                        this.ctx.menu = this.view.drawBarrackSelection(square.first().pos);
+                        this.state = 'barrack';
+                    } else {
+                        this.state = 'unselected';
+                    }
+                    this.ctx.selectedSquare = square;
+                }
+                break;
             default:
                 console.log("ERROR: undefined state");
         }
+    }
+
+    unitUpgradeable(pos, unit) {
+        let unitUpgradeable = false;
+        if (this.actionPoints > 1 && unit && unit.parentType() === 'Unit' &&
+            unit.team === this.currentPlayer.team &&
+            unit.isUpgradable() && isUpgradeButton(unit.pos, pos)) {
+                unitUpgradeable = true;
+                this.view.drawBoard(unit.pos, pos);
+        }
+        return unitUpgradeable;
+    }
+
+    unitUpgraded(pos, square) {
+        let unitUpgraded = false;
+        let unit = square.last();
+        if (unit && unit.parentType() === 'Unit' &&
+            unit.team === this.currentPlayer.team &&
+            unit.isUpgradable() && isUpgradeConfirmation(unit.pos, pos)) {
+                unit.upgrades();
+                this.actionPoints -= 2;
+                unitUpgraded = true;
+        }
+        return unitUpgraded;
     }
 
     unitSelected(unit) {
@@ -139,14 +199,13 @@ class Game {
     }
 
     barrackSelected(barrack) {
-        this.view.drawBoard();
+        //this.view.drawBoard();
         return barrack && barrack.type() === 'Barrack' && barrack.team === this.currentPlayer.team;
     }
 
     unitBought(pos, menu, square) {
         let unitBought = false;
         let newPos = this.adjustMenuPosition(square.first(), pos);
-
         let unit;
         if (unit = menu.find(e => e.pos.x === newPos.x && e.pos.y === newPos.y)) {
             unit.pos = square.first().pos;
@@ -180,10 +239,12 @@ class Game {
  
         if (unit.moves && unit.moves.find(e => e.x === pos.x && e.y === pos.y)) {
             unit.pos = pos; //reset unit position;
+            if (unit.hasUpgraded && unit.onHomeTerf()) {
+                unit.downgrade();
+            }
             square.pop();
             if (square.length > 0 && square.last().type() === 'Treasure'
                 && square.last().team !== this.currentPlayer.team) {
-                console.log(pos)
                 square.last().pos = pos;
                 this.board.grid.get(pos).push(square.pop());
             }
