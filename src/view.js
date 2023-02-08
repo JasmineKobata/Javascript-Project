@@ -52,6 +52,7 @@ class View {
                 this.drawGridElems({y: y, x: x}, unitPos, clickedPos);
             }
         }
+
         this.ctx.font = "40px Copperplate";
         this.game.currentPlayer.team === Board.ENEMY_TEAM ? this.ctx.fillStyle = "red" : this.ctx.fillStyle = "blue";
         let str = "Action Points: " + this.game.actionPoints.toString();
@@ -66,6 +67,16 @@ class View {
         this.ctx.fillText(str, 10, (Board.GRID_HEIGHT+0.75) * View.SQUARE_DIM);
 
         this.drawEndTurnButton();
+
+        this.drawMidline();
+    }
+
+    drawMidline() {
+        this.ctx.strokeStyle = 'lightskyblue';    
+        this.ctx.beginPath();
+        this.ctx.moveTo(0, Board.GRID_HEIGHT / 2 * View.SQUARE_DIM);
+        this.ctx.lineTo((Board.GRID_HEIGHT-1) * View.SQUARE_DIM, Board.GRID_HEIGHT / 2 * View.SQUARE_DIM);
+        this.ctx.stroke();
     }
 
     drawEndTurnButton() {
