@@ -1,7 +1,6 @@
 import Board from "./board";
 import HumanPlayer from "./humanPlayer";
 import { isUpgradeButton, isUpgradeConfirmation } from "./utils";
-import { drawUpgradeConfirmation } from "./view";
 
 class Game {
     constructor() {
@@ -33,6 +32,7 @@ class Game {
                     if (e.parentType() === 'Unit') {
                         e.hasMoved = false;
                         e.hasAttacked = false;
+                        e.hasUpgraded = false;
                     }
                 })
             })
@@ -124,8 +124,9 @@ class Game {
             case 'upgrade':
                 //if unit is upgraded
                 if (this.unitUpgraded(this.ctx.exactPos, this.ctx.selectedSquare)) {
-                    this.view.drawBoard();
                     this.state = 'unselected';
+                    if (this.actionPoints === 0) { this.switchPlayers(); }
+                    this.view.drawBoard();
                 }
                 else {
                     //if another unit upgrade is selected
@@ -186,7 +187,7 @@ class Game {
                     this.view.drawGridElems(pos);
                 });
             }
-            if (!unit.hasAttacked) {
+            if (!unit.hasAttacked && !unit.hasUpgraded) {
                 unit.getAttacks().forEach((pos) => {
                     this.view.drawAttackHighlights(pos);
                     this.view.drawGridElems(pos);
@@ -213,6 +214,7 @@ class Game {
             this.currentPlayer.units.push(unit);
             this.actionPoints -= 2;
             unitBought = true;
+            console.log(this.currentPlayer.team, this.currentPlayer.units);
         }
 
         return unitBought;
@@ -239,7 +241,7 @@ class Game {
  
         if (unit.moves && unit.moves.find(e => e.x === pos.x && e.y === pos.y)) {
             unit.pos = pos; //reset unit position;
-            if (unit.hasUpgraded && unit.onHomeTerf()) {
+            if (unit.onHomeTerf()) {
                 unit.downgrade();
             }
             square.pop();

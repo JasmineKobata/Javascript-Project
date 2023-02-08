@@ -30,7 +30,6 @@ class Unit extends Piece {
     }
 
     downgrade() {
-        this.hasUpgraded = false;
         this.attack = this.pointStandard.attack;
         this.defense = Math.min(this.pointStandard.defense, this.defense);
     }
@@ -89,7 +88,7 @@ class Unit extends Piece {
     }
 
     isUpgradable() {
-        return !this.hasUpgraded &&
+        return this.attack === this.pointStandard.attack &&
             ((this.team === Board.PLAYER_TEAM && this.pos.y < Board.GRID_HEIGHT / 2) ||
             (this.team === Board.ENEMY_TEAM && this.pos.y >= Board.GRID_HEIGHT / 2));
     }

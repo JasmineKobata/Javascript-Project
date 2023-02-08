@@ -9,13 +9,12 @@ class Player {
     removeUnit(unit) {
         let found = false;
         let i = 0;
-        console.log(this.units)
         while (!found && i < this.units.length) {
-            if (this.units[i++].pos === unit.pos) {
+            if (this.units[i++].pos.equals(unit.pos)) {
                 found = true;
             }
         }
-        return this.units.splice(i, 1);
+        return this.units.splice(i-1, 1);
     }
 }
 

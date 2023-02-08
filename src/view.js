@@ -101,52 +101,84 @@ class View {
     }
 
     drawWinningScreen() {
-        this.ctx.fillStyle = 'lightskyblue';
-        this.ctx.fillRect(
-            View.SQUARE_DIM * Math.floor((Board.GRID_WIDTH-2) / 2),
-            View.SQUARE_DIM * (Math.floor((Board.GRID_HEIGHT-2) / 2)+0.25),
-            View.SQUARE_DIM * 3,
-            View.SQUARE_DIM * 1.5);
-        this.ctx.strokeStyle = 'cornflowerblue';
-        this.ctx.lineWidth = 1;
-        this.ctx.strokeRect(
-            View.SQUARE_DIM * Math.floor((Board.GRID_WIDTH-2)/ 2),
-            View.SQUARE_DIM * (Math.floor((Board.GRID_HEIGHT-2) / 2)+0.25),
-            View.SQUARE_DIM * 3,
-            View.SQUARE_DIM * 1.5);
+        // this.ctx.fillStyle = 'lightskyblue';
+        // this.ctx.fillRect(
+        //     View.SQUARE_DIM * Math.floor((Board.GRID_WIDTH-2) / 2),
+        //     View.SQUARE_DIM * (Math.floor((Board.GRID_HEIGHT-2) / 2)+0.25),
+        //     View.SQUARE_DIM * 3,
+        //     View.SQUARE_DIM * 1.5);
+        // this.ctx.strokeStyle = 'cornflowerblue';
+        // this.ctx.lineWidth = 1;
+        // this.ctx.strokeRect(
+        //     View.SQUARE_DIM * Math.floor((Board.GRID_WIDTH-2)/ 2),
+        //     View.SQUARE_DIM * (Math.floor((Board.GRID_HEIGHT-2) / 2)+0.25),
+        //     View.SQUARE_DIM * 3,
+        //     View.SQUARE_DIM * 1.5);
 
 
-        this.ctx.font = "30px Copperplate";
-        this.ctx.fillStyle = "dimgrey";
-        this.ctx.lineWidth = 3;
-        let str = "";
-        this.game.currentPlayer.team === Board.PLAYER_TEAM ? str += "Blue" : str += "Red";
-        str += " Won!"
-        this.ctx.fillText(str,
-            View.SQUARE_DIM * (Board.GRID_WIDTH / 2 - 0.75),
-            View.SQUARE_DIM * (Board.GRID_HEIGHT / 2 - 0.25));
-        
-        this.drawPlayAgainButton();
+        let img = new Image();
+        img.onload = () => {
+            this.ctx.drawImage(
+                img,
+                View.SQUARE_DIM * Math.floor((Board.GRID_WIDTH-2) / 2),
+                View.SQUARE_DIM * (Math.floor((Board.GRID_HEIGHT-2) / 2)+0.25),
+                View.SQUARE_DIM * 3, View.SQUARE_DIM * 1.5);
+            this.ctx.beginPath();
+            this.ctx.stroke();
+
+            this.ctx.font = "30px Copperplate";
+            this.ctx.lineWidth = 3;
+            let str = "";
+            if (this.game.currentPlayer.team === Board.PLAYER_TEAM) {
+                this.ctx.fillStyle = "blue";
+                this.ctx.strokeStyle = "darkblue";
+                str += "Blue";
+            } else {
+                this.ctx.fillStyle = "red";
+                this.ctx.strokeStyle = "maroon";
+                str += "Red";
+            }
+            str += " Victory!"
+            this.ctx.strokeText(str,
+                View.SQUARE_DIM * (Board.GRID_WIDTH / 2 - 1),
+                View.SQUARE_DIM * (Board.GRID_HEIGHT / 2 - 0.25));
+            this.ctx.fillText(str,
+                View.SQUARE_DIM * (Board.GRID_WIDTH / 2 - 1),
+                View.SQUARE_DIM * (Board.GRID_HEIGHT / 2 - 0.25));
+            
+            this.drawPlayAgainButton();
+        };
+        img.src = './resources/wood.png';
     }
 
     drawPlayAgainButton() {
-        this.ctx.fillStyle = 'cornflowerblue';        
+        this.ctx.lineWidth = 2;
+        this.ctx.fillStyle = 'cornflowerblue';  
+        this.ctx.strokeStyle = '#543000';      
         this.ctx.fillRect(
             View.SQUARE_DIM * (Board.GRID_WIDTH / 2 - 0.75),
             View.SQUARE_DIM * (Math.floor((Board.GRID_HEIGHT) / 2)),
             View.SQUARE_DIM * 1.5,
             View.SQUARE_DIM * 0.5);
-        this.ctx.strokeStyle = 'cornflowerblue';
-        this.ctx.lineWidth = 1;
+        this.ctx.strokeRect(
+            View.SQUARE_DIM * (Board.GRID_WIDTH / 2 - 0.75),
+            View.SQUARE_DIM * (Math.floor((Board.GRID_HEIGHT) / 2)),
+            View.SQUARE_DIM * 1.5,
+            View.SQUARE_DIM * 0.5);
+        this.ctx.strokeStyle = 'blue';
         this.ctx.font = "24px Copperplate";
+        this.ctx.lineWidth = 1;
         this.ctx.fillStyle = "white";
+        this.ctx.strokeStyle = "grey"
+        this.ctx.strokeText("Play Again?",
+            View.SQUARE_DIM * (Board.GRID_WIDTH / 2 - 0.70),
+            View.SQUARE_DIM * (Board.GRID_HEIGHT / 2 + 0.3));
         this.ctx.fillText("Play Again?",
             View.SQUARE_DIM * (Board.GRID_WIDTH / 2 - 0.70),
             View.SQUARE_DIM * (Board.GRID_HEIGHT / 2 + 0.3));
     }
 
     drawUpgradeConfirmation(pos) {
-        console.log("upgrade button")
         this.ctx.fillStyle = 'lightskyblue';        
         this.ctx.fillRect(
             View.SQUARE_DIM * pos.x,
@@ -196,7 +228,6 @@ class View {
             });
         };
         img.src = './resources/wood.png';
-        console.log("draw board")
         return troopSelection;
     }
 
@@ -232,7 +263,6 @@ class View {
             gridSquare[i].draw(this.ctx, unitPos, clickedPos);
         }
         this.ctx.beginPath();
-        console.log("draw grid")
     }
 
     drawGridSquare(x, y, fillColor, outlineColor) {
