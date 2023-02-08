@@ -101,21 +101,7 @@ class View {
     }
 
     drawWinningScreen() {
-        // this.ctx.fillStyle = 'lightskyblue';
-        // this.ctx.fillRect(
-        //     View.SQUARE_DIM * Math.floor((Board.GRID_WIDTH-2) / 2),
-        //     View.SQUARE_DIM * (Math.floor((Board.GRID_HEIGHT-2) / 2)+0.25),
-        //     View.SQUARE_DIM * 3,
-        //     View.SQUARE_DIM * 1.5);
-        // this.ctx.strokeStyle = 'cornflowerblue';
-        // this.ctx.lineWidth = 1;
-        // this.ctx.strokeRect(
-        //     View.SQUARE_DIM * Math.floor((Board.GRID_WIDTH-2)/ 2),
-        //     View.SQUARE_DIM * (Math.floor((Board.GRID_HEIGHT-2) / 2)+0.25),
-        //     View.SQUARE_DIM * 3,
-        //     View.SQUARE_DIM * 1.5);
-
-
+        console.log("DRAW WIN SCREEN")
         let img = new Image();
         img.onload = () => {
             this.ctx.drawImage(
@@ -295,7 +281,7 @@ class View {
         let posExact = {y: yExact, x: xExact};
 
         if (this.game.board.isWon()) {
-            this.drawWinningScreen();
+        //    this.drawWinningScreen();
             if (willPlayAgain(posExact)) {
                 this.game.resetGame(this);
                 this.drawBoard();
@@ -418,13 +404,13 @@ Unit.prototype.draw = function(ctx, unitPos, clickedPos) {
             View.SQUARE_DIM, View.SQUARE_DIM);
         ctx.beginPath();
         ctx.stroke();
+        drawStats(this, ctx, this.pos.x, this.pos.y);
         if (this.isUpgradable()) {
             drawUpgradeButton(this, ctx, this.pos.x, this.pos.y);
             if (unitPos && clickedPos) {
                 drawUpgradeConfirmation(ctx, unitPos);
             }
         }
-        drawStats(this, ctx, this.pos.x, this.pos.y);
     };
     this.image.src = this.image.src;
 }

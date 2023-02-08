@@ -14,12 +14,14 @@ class Board {
     constructor() {
         let pos1 = {y: Board.GRID_HEIGHT-1, x: Math.floor(Board.GRID_WIDTH/2)}
         let pos2 = {y: 0, x: Math.floor(Board.GRID_WIDTH/2)}
-        this.treasure = {player: new Treasure(Board.PLAYER_TEAM, pos1),
+        this.treasure = {
+            player: new Treasure(Board.PLAYER_TEAM, pos1),
             enemy: new Treasure(Board.ENEMY_TEAM, pos2)};
 
         pos1 = {y: 0, x: Math.floor(Board.GRID_WIDTH/2)};
         pos2 = {y: Board.GRID_HEIGHT-1, x: Math.floor(Board.GRID_WIDTH/2)}
-        this.base = {player: new Base(Board.PLAYER_TEAM, pos2),
+        this.base = {
+            player: new Base(Board.PLAYER_TEAM, pos2),
             enemy: new Base(Board.ENEMY_TEAM, pos1)};
         this.grid = Board.makeGrid(this.treasure, this.base);
     }
@@ -77,9 +79,9 @@ class Board {
         // grid.get(pos).push(new Treasure(Board.PLAYER_TEAM, pos));
 
         //Temp units for testing
-        // pos = {y: 3, x: 2}
+        // pos = {y: 6, x: 3}
         // grid.get(pos).push(new Archer(Board.PLAYER_TEAM, pos));
-        // pos = {y: 4, x: 1}
+        // pos = {y: 1, x: 3}
         // grid.get(pos).push(new Infantry(Board.ENEMY_TEAM, pos));
         // pos = {y: 3, x: 4}
         // grid.get(pos).push(new Archer(Board.PLAYER_TEAM, pos));
