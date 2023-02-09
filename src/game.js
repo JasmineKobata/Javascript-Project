@@ -144,7 +144,7 @@ class Game {
                 }
                 break;
             default:
-                console.log("ERROR: undefined state");
+                // console.log("ERROR: undefined state");
         }
     }
 

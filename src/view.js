@@ -478,14 +478,12 @@ class View {
     }
 
     handleAbout(event) {
-        console.log("about")
         const e = document.querySelector(".abouttitle");
         this.invisifyButtons();
         e.style.visibility = 'visible';
     }
 
     handleRules(event) {
-        console.log("rules")
         const e = document.querySelector(".rulestitle");
         this.invisifyButtons();
         e.style.visibility = 'visible';

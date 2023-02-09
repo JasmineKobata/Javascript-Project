@@ -26,18 +26,6 @@ class Board {
         this.grid = Board.makeGrid(this.treasure, this.base);
     }
 
-    print() {
-        let strs = [];
-        for (let i=0; i < Board.GRID_HEIGHT; i++) {
-            let marks = [];
-            for (let j=0; j < Board.GRID_WIDTH; j++) {
-                marks.push( this.grid[i][j] ? this.grid[i][j] : " ");
-            }
-            strs.push(`${marks.join("|")}\n`);
-        }
-        console.log(strs.join('-------\n'));
-    }
-
     static makeGrid(treasure, base) {
         let grid = [];
 

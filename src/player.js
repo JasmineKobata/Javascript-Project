@@ -15,7 +15,7 @@ class Player {
             }
         }
         let u = this.units.splice(i-1, 1);
-        console.log(this.units, u )
+        // console.log(this.units, u )
         return this.units;
     }
 }
