@@ -33,6 +33,119 @@ Attacking:	1 Action Point\
 Buying:		2 Action Points\
 Upgrading:	2 Action Points
 
+---Features---\
+PATHFINDING\
+Unit pathfinding was implemented using recursion
+```
+getMoves() {
+    this.moves = this.getMovesSet();
+    this.moves.delete(JSON.stringify(this.pos));
+    this.moves = [...this.moves].map(elem => {
+        return JSON.parse(elem);
+    });
+    return this.moves;
+}
+
+getMovesSet(validVisited = new Set(), maxDist = 2, pos = this.pos) {
+    if (maxDist === 0) { return validVisited; }
+
+    for (let y=pos.y-1; y <= pos.y + 1; y++) {
+        for (let x=pos.x-1; x <= pos.x + 1; x++) {
+            let newPos = {y: y, x: x};
+            if (isOnBoard(newPos) && !this.hasUnit(newPos)) {
+                if (!validVisited.has(JSON.stringify(newPos))) {
+                    validVisited.add(JSON.stringify(newPos));
+                }
+                validVisited = this.getMovesSet(validVisited, maxDist-1, newPos);
+            }
+        }
+    }
+
+    return validVisited;
+}
+```
+
+STATE MACHINE\
+State machine implemented to keep track of game states & actions taken by the player
+```
+    stateMachine() {
+        let square = this.board.grid.get(this.ctx.clickedPos);
+        switch (this.state) {
+            case 'unselected':
+                //if unit upgrade is selected
+                if (this.unitUpgradeable(this.ctx.exactPos, square.last())) {
+                    this.state = 'upgrade';
+                } //if unit is selected
+                else if (this.unitSelected(square.last())) {
+                    this.state = 'unit';
+                } //else if barrack is selected
+                else if (this.barrackSelected(square.first())) {
+                    this.state = 'barrack';
+                }
+                break;
+            case 'unit':
+                //if action taken
+                if (this.actionTaken(this.ctx.clickedPos, this.ctx.selectedSquare)) {
+                    this.state = 'unselected';
+                } //else if action not taken
+                else {
+                    if (this.unitUpgradeable(this.ctx.exactPos, square.last())) {
+                        this.state = 'upgrade'
+                    }
+                    else if (this.unitSelected(square.last())) {
+                    	//stay in unit state
+                    }
+                    else if (this.barrackSelected(square.first())) {
+                        this.state = 'barrack';
+                    }
+                    else {
+                        this.state = 'unselected';
+                    }
+                }
+                break;
+            case 'barrack':
+                //if unit is bought
+                if (this.unitBought(this.ctx.exactPos, this.ctx.menu, this.ctx.selectedSquare)) {
+                    this.state = 'unselected';
+                } //else if unit is not bought
+                else {
+                    if (this.unitUpgradeable(this.ctx.exactPos, square.last())) {
+                        this.state = 'upgrade'
+                    }
+                    else if (this.unitSelected(square.last())) {
+                        this.state = 'unit';
+                    }
+                    else if (this.barrackSelected(square.first())) {
+                        //stay in barrack state
+                    } else {
+                        this.state = 'unselected';
+                    }
+                }
+                break;
+            case 'upgrade':
+                //if unit is upgraded
+                if (this.unitUpgraded(this.ctx.exactPos, this.ctx.selectedSquare)) {
+                    this.state = 'unselected';
+                } //else if unit is not upgraded
+                else {
+                    if (this.unitUpgradeable(this.ctx.exactPos, square.last())) {
+                    	//stay in upgrade state
+                    }
+                    else if (this.unitSelected(square.last())) {
+                        this.state = 'unit';
+                    }
+                    else if (this.barrackSelected(square.first())) {
+                        this.state = 'barrack';
+                    } else {
+                        this.state = 'unselected';
+                    }
+                }
+                break;
+            default:
+                console.log("ERROR: undefined state");
+        }
+```
+
 
 ---Technologies, Libraries, APIs---\
 This project was implemented using the following:
