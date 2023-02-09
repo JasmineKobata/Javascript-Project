@@ -151,4 +151,4 @@ This project was implemented using the following:
 - Animations for moving/ugrading/attacking
 - Tutorial Mode
 - AI for solo play
-- Sockets for remote gameplay
+- Sockets for remote multiplayer
