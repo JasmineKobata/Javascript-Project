@@ -37,31 +37,23 @@ Upgrading:	2 Action Points
 PATHFINDING\
 Unit pathfinding was implemented using recursion
 ```
-getMoves() {
-    this.moves = this.getMovesSet();
-    this.moves.delete(JSON.stringify(this.pos));
-    this.moves = [...this.moves].map(elem => {
-        return JSON.parse(elem);
-    });
-    return this.moves;
-}
-
-getMovesSet(validVisited = new Set(), maxDist = 2, pos = this.pos) {
-    if (maxDist === 0) { return validVisited; }
+getMoves(visited = new Set(), maxDist = 2, pos = this.pos) {
+    if (maxDist === 0) { return visited; }
 
     for (let y=pos.y-1; y <= pos.y + 1; y++) {
         for (let x=pos.x-1; x <= pos.x + 1; x++) {
             let newPos = {y: y, x: x};
+            //if newPos is on the board and does not contain a unit
             if (isOnBoard(newPos) && !this.hasUnit(newPos)) {
-                if (!validVisited.has(JSON.stringify(newPos))) {
-                    validVisited.add(JSON.stringify(newPos));
+                if (!visited.has(newPos)) {
+                    visited.add(newPos);
                 }
-                validVisited = this.getMovesSet(validVisited, maxDist-1, newPos);
+                visited = this.getMovesSet(visited, maxDist-1, newPos);
             }
         }
     }
 
-    return validVisited;
+    return visited;
 }
 ```
 
@@ -69,6 +61,7 @@ STATE MACHINE\
 State machine implemented to keep track of game states & actions taken by the player
 ```
     stateMachine() {
+        //get grid square that was clicked on
         let square = this.board.grid.get(this.stateVars.clickedPos);
         switch (this.state) {
             case 'unselected':
