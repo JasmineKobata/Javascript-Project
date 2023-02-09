@@ -8,8 +8,8 @@ https://jasminekobata.github.io/Javascript-Project/
 Each team has two barracks that can generate new units, with a total maximum of 8 units.
 There are 3 different types of units that can be spawned, as follows:
 
-- Infantry:	Defense 2, Attack 2, Attack Range 1\
-- Archer:	Defense 1, Attack 1, Attack Range 2\
+- Infantry:	Defense 2, Attack 2, Attack Range 1
+- Archer:	Defense 1, Attack 1, Attack Range 2
 - Infantry:	Defense 3, Attack 1, Attack Range 1
 
 | MOVING |\
@@ -18,8 +18,8 @@ All units can move 2 squares in any direction
 | UPGRADING |\
 Each unit can be upgraded when in enemy territory, as follows:
 
-- Infantry:	Defense +1, Attack +2\
-- Archer:	Defense +1, Attack +1\
+- Infantry:	Defense +1, Attack +2
+- Archer:	Defense +1, Attack +1
 - Infantry:	Defense +2, Attack +1
 
 Upgrading will restore any lost unit defense points. Units cannot attack after upgrading until the next round. Stats will revert to their original state once returning to friendly territory.
