@@ -62,11 +62,11 @@ State machine implemented to keep track of game states & actions taken by the pl
 ```
     stateMachine() {
         //get grid square that was clicked on
-        let square = this.board.grid.get(this.stateVars.clickedPos);
+        let square = this.board.grid.get(this.stateVariables.clickedPos);
         switch (this.state) {
             case 'unselected':
                 //if unit upgrade is selected
-                if (this.unitUpgradeable(this.stateVars, square)) {
+                if (this.unitUpgradeable(this.stateVariables, square)) {
                     this.state = 'upgrade';
                 } //if unit is selected
                 else if (this.unitSelected(square)) {
@@ -78,11 +78,11 @@ State machine implemented to keep track of game states & actions taken by the pl
                 break;
             case 'unit':
                 //if action taken
-                if (this.actionTaken(this.stateVars)) {
+                if (this.actionTaken(this.stateVariables)) {
                     this.state = 'unselected';
                 } //else if action not taken
                 else {
-                    if (this.unitUpgradeable(this.stateVars, square)) {
+                    if (this.unitUpgradeable(this.stateVariables, square)) {
                         this.state = 'upgrade'
                     }
                     else if (this.unitSelected(square)) {
@@ -98,11 +98,11 @@ State machine implemented to keep track of game states & actions taken by the pl
                 break;
             case 'barrack':
                 //if unit is bought
-                if (this.unitBought(this.stateVars)) {
+                if (this.unitBought(this.stateVariables)) {
                     this.state = 'unselected';
                 } //else if unit is not bought
                 else {
-                    if (this.unitUpgradeable(this.stateVars, square)) {
+                    if (this.unitUpgradeable(this.stateVariables, square)) {
                         this.state = 'upgrade'
                     }
                     else if (this.unitSelected(square)) {
@@ -117,11 +117,11 @@ State machine implemented to keep track of game states & actions taken by the pl
                 break;
             case 'upgrade':
                 //if unit is upgraded
-                if (this.unitUpgraded(this.stateVars)) {
+                if (this.unitUpgraded(this.stateVariables)) {
                     this.state = 'unselected';
                 } //else if unit is not upgraded
                 else {
-                    if (this.unitUpgradeable(this.stateVars, square)) {
+                    if (this.unitUpgradeable(this.stateVariables, square)) {
                     	//stay in upgrade state
                     }
                     else if (this.unitSelected(square)) {
