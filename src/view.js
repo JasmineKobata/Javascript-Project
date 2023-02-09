@@ -191,7 +191,7 @@ class View {
         this.drawMenuDisplayBox("About", title, title);
     
         const rules = document.createElement("li");
-        this.drawMenuInnerDisplayBox("<br><br><br><br><br><p>Game developed by Jasmine Kobata</p><br><p><a href='https://github.com/JasmineKobata/Javascript-Project'>Treasure Wars! GitHub Repo</p><br><p><a href='https://www.appacademy.io/'>App Academy</a> Javascript Project</p>", rules, title);
+        this.drawMenuInnerDisplayBox("<br><br><br><br><br><p>Game developed by <a href='https://www.linkedin.com/in/jdirksen/'>Jasmine Kobata</a></p><br><p><a href='https://github.com/JasmineKobata/Javascript-Project'>Treasure Wars! GitHub Repo</p><br><p><a href='https://www.appacademy.io/'>App Academy</a> Javascript Project</p>", rules, title);
         rules.style.font = "15px Copperplate";
         rules.classList.add("aboutbox");
 
