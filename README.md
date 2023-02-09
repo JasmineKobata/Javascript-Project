@@ -34,7 +34,7 @@ Buying:		2 Action Points\
 Upgrading:	2 Action Points
 
 
----Technologies, Libraries, APIs---
+---Technologies, Libraries, APIs---\
 This project was implemented using the following:
 
 - Canvas API
