@@ -69,33 +69,33 @@ STATE MACHINE\
 State machine implemented to keep track of game states & actions taken by the player
 ```
     stateMachine() {
-        let square = this.board.grid.get(this.ctx.clickedPos);
+        let square = this.board.grid.get(this.stateVars.clickedPos);
         switch (this.state) {
             case 'unselected':
                 //if unit upgrade is selected
-                if (this.unitUpgradeable(this.ctx.exactPos, square.last())) {
+                if (this.unitUpgradeable(this.stateVars, square)) {
                     this.state = 'upgrade';
                 } //if unit is selected
-                else if (this.unitSelected(square.last())) {
+                else if (this.unitSelected(square)) {
                     this.state = 'unit';
                 } //else if barrack is selected
-                else if (this.barrackSelected(square.first())) {
+                else if (this.barrackSelected(square)) {
                     this.state = 'barrack';
                 }
                 break;
             case 'unit':
                 //if action taken
-                if (this.actionTaken(this.ctx.clickedPos, this.ctx.selectedSquare)) {
+                if (this.actionTaken(this.stateVars)) {
                     this.state = 'unselected';
                 } //else if action not taken
                 else {
-                    if (this.unitUpgradeable(this.ctx.exactPos, square.last())) {
+                    if (this.unitUpgradeable(this.stateVars, square)) {
                         this.state = 'upgrade'
                     }
-                    else if (this.unitSelected(square.last())) {
+                    else if (this.unitSelected(square)) {
                     	//stay in unit state
                     }
-                    else if (this.barrackSelected(square.first())) {
+                    else if (this.barrackSelected(square)) {
                         this.state = 'barrack';
                     }
                     else {
@@ -105,17 +105,17 @@ State machine implemented to keep track of game states & actions taken by the pl
                 break;
             case 'barrack':
                 //if unit is bought
-                if (this.unitBought(this.ctx.exactPos, this.ctx.menu, this.ctx.selectedSquare)) {
+                if (this.unitBought(this.stateVars)) {
                     this.state = 'unselected';
                 } //else if unit is not bought
                 else {
-                    if (this.unitUpgradeable(this.ctx.exactPos, square.last())) {
+                    if (this.unitUpgradeable(this.stateVars, square)) {
                         this.state = 'upgrade'
                     }
-                    else if (this.unitSelected(square.last())) {
+                    else if (this.unitSelected(square)) {
                         this.state = 'unit';
                     }
-                    else if (this.barrackSelected(square.first())) {
+                    else if (this.barrackSelected(square)) {
                         //stay in barrack state
                     } else {
                         this.state = 'unselected';
@@ -124,17 +124,17 @@ State machine implemented to keep track of game states & actions taken by the pl
                 break;
             case 'upgrade':
                 //if unit is upgraded
-                if (this.unitUpgraded(this.ctx.exactPos, this.ctx.selectedSquare)) {
+                if (this.unitUpgraded(this.stateVars)) {
                     this.state = 'unselected';
                 } //else if unit is not upgraded
                 else {
-                    if (this.unitUpgradeable(this.ctx.exactPos, square.last())) {
+                    if (this.unitUpgradeable(this.stateVars, square)) {
                     	//stay in upgrade state
                     }
-                    else if (this.unitSelected(square.last())) {
+                    else if (this.unitSelected(square)) {
                         this.state = 'unit';
                     }
-                    else if (this.barrackSelected(square.first())) {
+                    else if (this.barrackSelected(square)) {
                         this.state = 'barrack';
                     } else {
                         this.state = 'unselected';
