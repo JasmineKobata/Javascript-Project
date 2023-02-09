@@ -409,7 +409,7 @@ class View {
     drawGridSquare(x, y, outlineColor, fillColor) {
         if (fillColor) {
             this.ctx.fillStyle = fillColor;
-            this.ctx.globalAlpha = 0.5;
+            this.ctx.globalAlpha = 0.60;
             this.ctx.fillRect(
                 View.SQUARE_DIM * x,
                 View.SQUARE_DIM * y,
