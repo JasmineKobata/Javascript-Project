@@ -1,5 +1,5 @@
 class Piece {
-    constructor(team, pos) {
+    constructor(team, pos, ) {
         this.team = team;
         this.pos = pos
         this.image = new Image();

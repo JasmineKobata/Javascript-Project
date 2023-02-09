@@ -45,7 +45,6 @@ class Game {
     //ctx -> {clickedPos always set, selectedSquare that will be set in unselected stage}
     stateMachine() {
         let square = this.board.grid.get(this.ctx.clickedPos);
-        console.log(this.state)
         switch (this.state) {
             case 'unselected':
                 //if unit upgrade is selected
@@ -60,7 +59,6 @@ class Game {
                 else if (this.actionPoints > 1 && this.currentPlayer.units.length < 8
                     && this.barrackSelected(square.first())) {
                     this.ctx.menu = this.view.drawBarrackSelection(square.first().pos);
-                    
                     this.ctx.selectedSquare = square;
                     this.state = 'barrack';
                 }
@@ -70,7 +68,7 @@ class Game {
                 if (this.actionTaken(this.ctx.clickedPos, this.ctx.selectedSquare)) {
                     this.ctx = {};
                     this.state = 'unselected';
-                    this.view.drawBoard();
+                    // this.view.drawBoard();
                     if (this.board.isWon()) {
                         this.view.drawBoard();
                         this.view.drawWinningScreen();
@@ -177,8 +175,9 @@ class Game {
         if (unit && unit.parentType() === 'Unit' && unit.team === this.currentPlayer.team) {
             unit.resetActions(); //reset newly selected unit's action squares
             if (!unit.board) { unit.board = this.board; }
+            if (!unit.view) { unit.view = this.view; }
 
-            this.view.drawBoard(null, null, this.unitCallDrawSelected, unit, this.view);
+            this.unitCallDrawSelected(unit, this.view);
             unitSelected = true;
         }
         return unitSelected;

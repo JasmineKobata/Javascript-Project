@@ -14,7 +14,10 @@ class Player {
                 found = true;
             }
         }
-        return this.units.splice(i-1, 1);
+        let u = this.units.splice(i-1, 1);
+        let u2 = this.units.splice(i, 1);
+        console.log(u2)
+        return u2;
     }
 }
 

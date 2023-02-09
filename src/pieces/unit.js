@@ -16,6 +16,7 @@ class Unit extends Piece {
         this.hasAttacked = false;
         this.hasUpgraded = false;
         this.board = null;
+        this.view = null;
     }
 
     resetActions() {
