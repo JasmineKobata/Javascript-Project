@@ -44,7 +44,6 @@ class Game {
 
     //ctx -> {clickedPos always set, selectedSquare that will be set in unselected stage}
     stateMachine() {
-        console.log("HI")
         let square = this.board.grid.get(this.ctx.clickedPos);
         switch (this.state) {
             case 'unselected':

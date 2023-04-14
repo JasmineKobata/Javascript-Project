@@ -514,6 +514,7 @@ class View {
         const rules = document.querySelector(".rules");
         if (rules) {rules.addEventListener("click", this.handleRules.bind(this));}
         ctx.canvas.addEventListener('click', this.handleClick.bind(this));
+        document.addEventListener("click", this.handleBackground.bind(this));
     }
 
     handleAbout(event) {
@@ -561,6 +562,13 @@ class View {
                 this.game.switchPlayers();
                 this.drawBoard();
             }
+        }
+    }
+
+    handleBackground(event) {
+        if (!document.querySelector(".background").contains(event.target)) {
+            this.drawBoard();
+            this.game.state = "unselected";
         }
     }
 }
