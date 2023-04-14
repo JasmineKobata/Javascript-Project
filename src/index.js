@@ -3,6 +3,8 @@ import Game from './game.js';
 
 document.addEventListener("DOMContentLoaded", () => {
     const canvas = document.getElementById('treasure-game');
+    canvas.width = window.innerWidth;
+    canvas.height = window.innerHeight;
     const ctx = canvas.getContext("2d");
     const el = document.querySelector('.buttons');
 

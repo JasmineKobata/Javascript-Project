@@ -12,10 +12,49 @@
 		<!--<script type="application/javascript" src="dist/main.js" defer></script>-->
 		<title>Treasure Wars!</title>
 		<link rel="icon" type="image/x-icon" href="favicon.ico">
+		<style>
+			canvas {
+				display: block;
+				min-height: 600px;
+				min-width: 467px;
+				max-height: 125vw;
+				max-width: 100vw;
+				height: 100vh;
+				aspect-ratio: 7/9;
+			}
+			.background {
+				position: absolute;
+				top: 10px;
+				left: 10px;
+				display: block;
+				height: 97.5vh;
+				aspect-ratio: 7/9.225;
+				min-height: 584px;
+				max-height: 122vw;
+				left: 50%;
+    			/* margin-right: -50%; */
+				/* background-color: grey; */
+				transform: translate(-50%, 0%);
+			}
+			.grid {
+				/* margin-left: auto;
+				margin-right: auto; */
+				position: absolute;
+				/* overflow: hidden; */
+				font-family: Copperplate;
+				font-size: 2em;
+			}.menu {
+				/* margin-left: auto;
+				margin-right: auto; */
+				position: absolute;
+			}
+		</style>
 	</head>
 	
 	<body>
-		<canvas id="treasure-game"></canvas>
+		<div class="background">
+			<canvas id="treasure-game"></canvas>
+		</div>
 		<figure class="buttons"></figure>
 	</body>
 </html>

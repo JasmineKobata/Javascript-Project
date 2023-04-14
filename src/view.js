@@ -1,5 +1,4 @@
 import Board from "./board";
-import Game from "./game";
 import Barrack from "./pieces/barrack";
 import Base from "./pieces/base";
 import Treasure from "./pieces/treasure";
@@ -20,10 +19,6 @@ class View {
         this.images = this.renderImg();
         this.drawBoard();
         this.drawMenu({y: Board.GRID_HEIGHT, x: Board.GRID_WIDTH});
-        // addEventListener("resize", (event) => {
-        //     this.clearBoard();
-        //     this.drawBoard();
-        // });
     }
 
     resetView(game) {
@@ -111,77 +106,120 @@ class View {
         const grid = document.createElement("ul");
         grid.classList.add("grid");
 
-        let width = 100 * this.ratio;
-        let height = 50 * this.ratio;
-        grid.style.width = width.toString()+"px";
-        grid.style.height = height.toString()+"px";
-    
+        grid.style.position = "absolute";
+        grid.style.right = "7.5%";
+        grid.style.bottom = "calc(0.2% - 32px)";
+        grid.style.width = "calc(14.29% - 40px)";
+        grid.style.height = "5.85%";
+
         const cell = document.createElement("li");
+        cell.classList.add("menu")
         cell.style.backgroundColor = "lightskyblue";
         cell.style.border = "1px solid cornflowerblue";
-        cell.style.width = grid.style.width;
-        cell.style.height = grid.style.height;
-        cell.style.position = "absolute";
-        cell.style.left = ((pos.x-1.5)*this.ratio*View.SQUARE_DIM).toString()+"px"
-        cell.style.top = ((pos.y+0.32)*this.ratio*View.SQUARE_DIM).toString()+"px"
-        cell.style.margin = "0px"
+        cell.style.height = "calc(100% - 2px)";
+        cell.style.width = "calc(100% - 2px)";
+        cell.style.left = "0px";
+
         cell.style.listStyle = "none";
         cell.style.cursor = "pointer";
         cell.innerHTML = "Menu"
-        cell.style.font = "25px Copperplate"
+        cell.style.font = (25*this.ratio) + "px Copperplate"
+
         cell.style.color = "dimgrey"
         cell.style.textAlign = "center"
-        cell.style.lineHeight = (50*this.ratio).toString()+"px";
+        cell.style.lineHeight = "200%"
         cell.classList.add("button");
 
         grid.appendChild(cell);
-        this.el.appendChild(grid);
+        // this.el.appendChild(grid);
+        document.getElementsByClassName("background")[0].appendChild(grid)
 
-        this.drawMenuOptions(pos);
-        this.drawRules(pos);
-        this.drawAbout(pos);
+        this.drawMenuOptions(pos, cell);
+        const ruleBox = this.drawRules(pos);
+        const aboutBox = this.drawAbout(pos);
+
+        const windowResize = window.onresize;
+        window.onresize = () => {
+            windowResize();
+
+            if (this.ratio < 0.67) {
+                this.ratio = 0.67;
+            }
+            ruleBox.style.font = (19*this.ratio - 2) + "px Copperplate"
+            ruleBox.style.lineHeight = "100%"
+            aboutBox.style.font = (20*this.ratio - 2) + "px Copperplate"
+            aboutBox.style.lineHeight = "350%"
+        }
     }
 
-    drawMenuOptions(pos) {
+    drawMenuOptions(pos, cell) {
         const menu = document.createElement("ul");
         menu.classList.add("menu");
 
-        let width = 100 * this.ratio;
-        let height = 50 * this.ratio;
-        menu.style.width = width.toString()+"px";
-        menu.style.height = height.toString()+"px";
+        menu.style.position = "absolute";
+        menu.style.right = "7.5%";
+        menu.style.bottom = "calc(5.85% - 16px)";
+        menu.style.width = "calc(14.29% - 42px)";
+        menu.style.height = "calc(5.85% - 2px)";
     
         const rules = document.createElement("li");
-        this.drawButton("Rules", rules, {x: pos.x, y: pos.y - 0.5}, menu);
+        this.drawButton("Rules", rules, {x: "0%", y: "100%"});
         rules.classList.add("rules");
         const about = document.createElement("li");
-        this.drawButton("About", about, pos, menu);
+        this.drawButton("About", about, {x: "0%", y: "0%"});
         about.classList.add("about");
+
+        rules.style.font = 20*this.ratio + "px Copperplate";
+        rules.style.lineHeight = "250%"
+        about.style.font = 20*this.ratio + "px Copperplate";
+        about.style.lineHeight = "250%"
 
         menu.appendChild(rules);
         menu.appendChild(about);
         menu.style.visibility = 'hidden'
-        this.el.appendChild(menu);
+
+        window.onresize = () => {
+            this.ratio = Math.min(
+                window.innerHeight / this.ctx.canvas.height,
+                window.innerWidth / this.ctx.canvas.width
+            )
+            if (this.ratio < 0.67) {
+                this.ratio = 0.67;
+            }
+            cell.style.font = (25*this.ratio) + "px Copperplate"
+            cell.style.lineHeight = "200%"
+
+            rules.style.font = (20*this.ratio) + "px Copperplate"
+            rules.style.lineHeight = "250%"
+            about.style.font = (20*this.ratio) + "px Copperplate"
+            about.style.lineHeight = "250%"
+        }
+
+        // this.el.appendChild(menu);
+        document.getElementsByClassName("background")[0].appendChild(menu)
     }
 
     drawRules(pos) {
         const title = document.createElement("ul");
         title.classList.add("rulestitle");
         this.drawMenuDisplayBox("How To Play", title, title);
-
-        // let width = 500 * this.ratio;
-        // let height = 600 * this.ratio;
-        // title.style.width = width.toString()+"px";
-        // title.style.height = height.toString()+"px";
     
         const rules = document.createElement("li");
-        this.drawMenuInnerDisplayBox("Steal the enemy's treasure & bring it back to your base!<p>BUYING | Select the barracks to buy troops. All units can move up to 2 spaces in any direction. There are 3 types of troops:</p>-Infantry: Defense 2, Attack 1, Range 1<br>-Archer: Defense 1, Attack 1, Range 2<br>-Defender: Defense 3, Attack 1, Range 1<br><p>UPGRADING | When in enemy territory, units can be ugraded as follows:</p>-Infantry: Defense +1, Attack +2<br>-Archer: Defense +1, Attack +1<br>-Defender: Defense +2, Attack +1<br><p>Units cannot attack after upgrading until the next round. Stats return to normal once returning to friendly territory.</p><p>TREASURE | Pick up the treasure by moving a unit onto the square containing it. (You can only pick up enemy treasure.)</p><p>PRICE CHART<br>Moving or Attacking: 1 Action Point<br>Buying or Upgrading: 2 Action Points</p>", rules, title);
+        this.drawMenuInnerDisplayBox("Steal the enemy's treasure & bring it back to your base!<p>BUYING | Select the barracks to buy troops. All units can move up to 2 spaces in any direction. There are 3 types of troops:</p>-Infantry: Defense 2, Attack 1, Range 1<br>-Archer: Defense 1, Attack 1, Range 2<br>-Defender: Defense 3, Attack 1, Range 1<br><p>UPGRADING | When in enemy territory, units can be ugraded as follows:</p>-Infantry: Defense +1, Attack +2<br>-Archer: Defense +1, Attack +1<br>-Defender: Defense +2, Attack +1<br><p>Units cannot attack after upgrading until the next round. Stats return to normal once returning to friendly territory.</p><p>TREASURE | Pick up the treasure by moving a unit onto the square containing it. (You can only pick up enemy treasure.)</p><p>PRICE CHART<br>Moving or Attacking: 1 Action Point<br>Buying or Upgrading: 2 Action Points</p>",
+        rules, title);
         rules.style.font = "12px Copperplate";
+        if (this.ratio < 0.67) {
+            this.ratio = 0.67;
+        }
+        rules.style.font = (19*this.ratio - 2) + "px Copperplate"
+        rules.style.lineHeight = "100%";
         rules.classList.add("rulesbox");
 
         title.appendChild(rules);
         title.style.visibility = 'hidden'
-        this.el.appendChild(title);
+        // this.el.appendChild(title);
+        document.getElementsByClassName("background")[0].appendChild(title)
+        return rules;
     }
 
     drawAbout(pos) {
@@ -190,26 +228,31 @@ class View {
 
         this.drawMenuDisplayBox("About", title, title);
     
-        const rules = document.createElement("li");
-        this.drawMenuInnerDisplayBox("<br><br><br><br><br><p>Game developed by <a href='https://www.linkedin.com/in/jdirksen/'>Jasmine Kobata</a></p><br><p><a href='https://github.com/JasmineKobata/Javascript-Project'>Treasure Wars! GitHub Repo</p><br><p><a href='https://www.appacademy.io/'>App Academy</a> Javascript Project</p>", rules, title);
-        rules.style.font = "15px Copperplate";
-        rules.classList.add("aboutbox");
+        const about = document.createElement("li");
+        this.drawMenuInnerDisplayBox("<br><br><p>Game developed by <a href='https://www.linkedin.com/in/jdirksen/'>Jasmine Kobata</a></p><p><a href='https://github.com/JasmineKobata/Javascript-Project'>Treasure Wars! GitHub Repo</p><p><a href='https://www.appacademy.io/'>App Academy</a> Javascript Project</p>", about, title);
+        if (this.ratio < 0.67) {
+            this.ratio = 0.67;
+        }
+        about.style.font = (20*this.ratio - 2) + "px Copperplate";
+        about.style.lineHeight = "350%"
+        about.classList.add("aboutbox");
 
-        title.appendChild(rules);
+        title.appendChild(about);
         title.style.visibility = 'hidden'
-        this.el.appendChild(title);
+        // this.el.appendChild(title);
+        document.getElementsByClassName("background")[0].appendChild(title)
+        return about;
     }
 
     drawMenuDisplayBox(str, box, title) {
-        let width = 450 * this.ratio;
-        let height = 600 * this.ratio;
-        box.style.width = width.toString()+"px";
-        box.style.height = height.toString()+"px";
+        box.style.width = "calc(75% - 42px)"
+        box.style.height = "calc(75% - 2px)"
         box.style.backgroundColor = "lightskyblue";
         box.style.border = "1px solid cornflowerblue";
         box.style.position = "absolute";
-        box.style.left = (this.ratio*(View.SQUARE_DIM + 10)).toString()+"px"
-        box.style.top = (this.ratio*(View.SQUARE_DIM+10)).toString()+"px"
+        box.style.left = "50%";
+        box.style.top = "45%";
+        box.style.transform = "translate(-50%, -50%)";
         box.style.margin = "0px"
         box.style.listStyle = "none";
         box.style.cursor = "pointer";
@@ -221,40 +264,36 @@ class View {
     }
 
     drawMenuInnerDisplayBox(str, box, title) {
-        let width = 375 * this.ratio;
-        let height = 475 * this.ratio;
-        box.style.width = width.toString()+"px";
-        box.style.height = height.toString()+"px";
+        box.style.width = "calc(80% - 42px)"
+        box.style.height = "calc(80% - 2px)"
         box.style.backgroundColor = "cornflowerblue";
         box.style.border = "1px solid cornflowerblue";
         box.style.position = "absolute";
-        box.style.left = (this.ratio*(View.SQUARE_DIM/2 + 10)).toString()+"px"
-        box.style.top = (this.ratio*(View.SQUARE_DIM/2+10)).toString()+"px"
-        box.style.margin = "0px"
+        box.style.left = "50%";
+        box.style.top = "50%";
+        box.style.transform = "translate(-50%, -50%)";
+        // box.style.margin = "0px";
         box.style.listStyle = "none";
         box.style.cursor = "pointer";
         box.innerHTML = str;
         box.style.font = "25px Copperplate"
         box.style.color = "white"
-        box.style.textAlign = "center"
     }
 
-    drawButton(str, cell, pos, container) {
+    drawButton(str, cell, pos) {
         cell.style.backgroundColor = "lightskyblue";
         cell.style.border = "1px solid cornflowerblue";
-        cell.style.width = container.style.width;
-        cell.style.height = container.style.height;
+        cell.style.width = "100%";
+        cell.style.height = "100%";
         cell.style.position = "absolute";
-        cell.style.left = ((pos.x-1.5)*this.ratio*View.SQUARE_DIM).toString()+"px"
-        cell.style.top = ((pos.y+0.32)*this.ratio*View.SQUARE_DIM).toString()+"px"
+        cell.style.right = pos.x;
+        cell.style.bottom = pos.y;
         cell.style.margin = "0px"
         cell.style.listStyle = "none";
         cell.style.cursor = "pointer";
         cell.innerHTML = str
-        cell.style.font = "20px Copperplate"
         cell.style.color = "dimgrey"
         cell.style.textAlign = "center"
-        cell.style.lineHeight = (50*this.ratio).toString()+"px";
     }
 
     drawWinningScreen() {
@@ -437,7 +476,7 @@ class View {
             window.innerHeight / this.ctx.canvas.height,
             window.innerWidth / this.ctx.canvas.width
         )
-        this.ctx.scale(this.ratio, this.ratio);
+        // this.ctx.scale(this.ratio, this.ratio);
         let images = {};
         images.background = new Image();
         images.background.src = "./resources/grass2.png";
@@ -493,6 +532,7 @@ class View {
         const e1 = document.querySelector(".about")
         const e2 = document.querySelector(".rules")
 
+        this.invisifyButtons();
         e1.style.visibility = 'visible';
         e2.style.visibility = 'visible';
     }

@@ -1,9 +1,6 @@
 import Barrack from "./pieces/barrack";
 import Base from "./pieces/base";
 import Treasure from "./pieces/treasure";
-import Archer from "./pieces/units/archer";
-import Defender from "./pieces/units/defender";
-import Infantry from "./pieces/units/infantry";
 
 class Board {
     static GRID_WIDTH = 7;
@@ -54,18 +51,6 @@ class Board {
 
         grid.get(treasure.enemy.pos).push(treasure.enemy);
         grid.get(treasure.player.pos).push(treasure.player);
-
-        //Temp units for testing
-        // pos = {y: 6, x: 3}
-        // grid.get(pos).push(new Archer(Board.PLAYER_TEAM, pos));
-        // pos = {y: 1, x: 3}
-        // grid.get(pos).push(new Infantry(Board.ENEMY_TEAM, pos));
-        // pos = {y: 3, x: 4}
-        // grid.get(pos).push(new Archer(Board.PLAYER_TEAM, pos));
-        // pos = {y: 4, x: 1}
-        // grid.get(pos).push(new Archer(Board.PLAYER_TEAM, pos));
-        // pos = {y: 3, x: 3}
-        // grid.get(pos).push(new Defender(Board.ENEMY_TEAM, pos));
 
         return grid;
     }
