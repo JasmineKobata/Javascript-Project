@@ -19,6 +19,7 @@ class View {
         this.images = this.renderImg();
         this.drawBoard();
         this.drawMenu({y: Board.GRID_HEIGHT, x: Board.GRID_WIDTH});
+        this.noMoreMoves = this.drawNoMoreMovesModule();
     }
 
     resetView(game) {
@@ -296,6 +297,73 @@ class View {
         cell.style.textAlign = "center"
     }
 
+    updateNoMoreMovesStr() {
+        let str = "<br>No Moves Left!</br>";
+        str += this.game.currentPlayer.team === Board.PLAYER_TEAM ? "Red" : "Blue";
+        str += "'s Turn?"
+        return str;
+    }
+
+    drawNoMoreMovesModule() {
+        const background = document.createElement("div");
+        background.classList.add("movesBackground")
+        background.style.width = "100%";
+        background.style.height = "100%";
+        background.style.position = "absolute";
+        background.style.top = "0px";
+        background.style.visibility = "hidden";
+
+        const module = document.createElement("ul");
+        module.classList.add("noMoreMoves");
+
+        module.style.width = "calc(40% - 42px)"
+        module.style.height = "calc(18% - 2px)"
+        module.style.backgroundColor = "lightskyblue";
+        module.style.border = "1px solid cornflowerblue";
+        module.style.position = "absolute";
+        module.style.left = "50%";
+        module.style.top = "45%";
+        module.style.transform = "translate(-50%, -50%)";
+        module.style.margin = "0px"
+        module.style.paddingLeft = "10px";
+        module.style.paddingRight = module.style.paddingLeft;
+        module.style.listStyle = "none";
+        module.style.cursor = "pointer";
+        module.style.font = (27*this.ratio - 2) + "px Copperplate"
+        module.style.color = "dimgrey"
+        module.style.textAlign = "center"
+        
+        const button = document.createElement("li");
+        button.classList.add("movesButton");
+        button.innerHTML = "OK"
+        button.style.width = "50%"
+        button.style.height = "calc(18% - 2px)"
+        button.style.backgroundColor = "cornflowerblue";
+        button.style.border = "1px solid cornflowerblue";
+        button.style.marginLeft = "auto";
+        button.style.marginRight = "auto";
+        button.style.marginTop = "11%"
+        button.style.color = "white"
+
+        const windowResize = window.onresize;
+        window.onresize = () => {
+            windowResize();
+
+            if (this.ratio < 0.67) {
+                this.ratio = 0.67;
+            }
+            module.style.font = (27*this.ratio - 2) + "px Copperplate"
+            // ruleBox.style.lineHeight = "100%"
+        }
+
+        module.appendChild(button);
+        background.appendChild(module);
+        document.getElementsByClassName("background")[0].appendChild(background)
+
+        // this.bindMovesButton();
+        return background;
+    }
+
     drawWinningScreen() {
         let img = new Image();
         img.src = './resources/wood.png';
@@ -506,6 +574,10 @@ class View {
         return images;
     }
 
+    // background.classList.add(".movesBackground")
+    // module.classList.add(".noMoreMoves");
+    // button.classList.add(".movesButton");
+
     bindEvents(ctx) {
         const button = document.querySelector(".button");
         button.addEventListener("click", this.handleButton.bind(this));
@@ -515,6 +587,21 @@ class View {
         if (rules) {rules.addEventListener("click", this.handleRules.bind(this));}
         ctx.canvas.addEventListener('click', this.handleClick.bind(this));
         document.addEventListener("click", this.handleBackground.bind(this));
+        this.bindMovesButton();
+    }
+
+    bindMovesButton() {
+        const movesBackground = document.querySelector(".movesBackground");
+        if (movesBackground) {
+            console.log("1", movesBackground);
+            movesBackground.addEventListener("click", this.handleMovesBackground.bind(this, movesBackground))
+        };
+        const movesButton = document.querySelector(".movesButton");
+        if (movesButton) {
+            console.log("2", movesButton)
+            movesButton.addEventListener("click", this.handleMovesButton.bind(this, movesBackground))
+        };
+        return movesButton;
     }
 
     handleAbout(event) {
@@ -569,6 +656,20 @@ class View {
         if (!document.querySelector(".background").contains(event.target)) {
             this.drawBoard();
             this.game.state = "unselected";
+        }
+    }
+
+    handleMovesButton(movesBackground, event) {
+        console.log("HI")
+        this.game.switchPlayers();
+        movesBackground.style.visibility = "hidden";
+        this.drawBoard();
+    }
+
+    handleMovesBackground(movesBackground, event) {
+        console.log("HO")
+        if (!document.querySelector(".noMoreMoves").contains(event.target)) {
+            movesBackground.style.visibility = "hidden";
         }
     }
 }

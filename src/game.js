@@ -93,6 +93,7 @@ class Game {
                     }
                     this.ctx.selectedSquare = square;
                 }
+                this.noMoreMovesDisplay();
                 break;
             case 'barrack':
                 //if unit is bought
@@ -117,6 +118,7 @@ class Game {
                     }
                     this.ctx.selectedSquare = square;
                 }
+                this.noMoreMovesDisplay();
                 break;
             case 'upgrade':
                 //if unit is upgraded
@@ -142,10 +144,57 @@ class Game {
                     }
                     this.ctx.selectedSquare = square;
                 }
+                this.noMoreMovesDisplay();
                 break;
             default:
                 // console.log("ERROR: undefined state");
         }
+    }
+
+    noMoreMovesDisplay() {
+        if (!this.movesAvailable() && this.actionPoints < 4) {
+            const noMoreMoves = this.view.noMoreMoves.querySelector(".noMoreMoves");
+            const button = noMoreMoves.querySelector(".movesButton")
+        
+            noMoreMoves.innerHTML = this.view.updateNoMoreMovesStr();
+            noMoreMoves.appendChild(button);
+            
+            this.view.noMoreMoves.style.visibility = "visible"
+        }
+    }
+
+    movesAvailable() {
+        let bool = false;
+        this.currentPlayer.units.forEach(unit => {
+            bool ||= !unit.hasMoved;
+            if (!unit.hasAttacked) {
+                unit.getAttacks();
+            }
+            bool ||= !unit.hasUpgraded && unit.attacks.length > 0;
+            bool ||= this.actionPoints > 1 && unit.isUpgradable(this.currentPlayer);
+            bool ||= this.actionPoints > 1 && this.barracksEmpty();
+        })
+        return bool;
+    }
+
+    barracksEmpty() {
+        let barracks;
+        if (this.currentPlayer === this.player) {
+            barracks = this.board.barracks.player;
+        } else {
+            barracks = this.board.barracks.enemy;
+        }
+
+        let res = false;
+        barracks.forEach(b => {
+            let bool = true;
+            const barrackSquare = this.board.grid.get(b.pos)
+            barrackSquare.forEach(unit => {
+                if (unit.parentType() === 'Unit') bool = false;
+            })
+            res ||= bool;
+        })
+        return res;
     }
 
     unitUpgradeable(pos, unit) {
@@ -190,6 +239,7 @@ class Game {
                 view.drawGridElems(pos);
             });
         }
+
         if (!unit.hasAttacked && !unit.hasUpgraded) {
             unit.getAttacks().forEach((pos) => {
                 view.drawAttackHighlights(pos);

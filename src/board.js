@@ -20,10 +20,14 @@ class Board {
         this.base = {
             player: new Base(Board.PLAYER_TEAM, pos2),
             enemy: new Base(Board.ENEMY_TEAM, pos1)};
-        this.grid = Board.makeGrid(this.treasure, this.base);
+        this.barracks = {
+            player: [],
+            enemy: []
+        };
+        this.grid = Board.makeGrid(this.treasure, this.base, this.barracks);
     }
 
-    static makeGrid(treasure, base) {
+    static makeGrid(treasure, base, barracks) {
         let grid = [];
 
         for (let i=0; i < Board.GRID_HEIGHT; i++) {
@@ -34,17 +38,24 @@ class Board {
         }
 
         let pos = {y: 0, x: 0};
-        grid.get(pos).push(new Barrack(Board.ENEMY_TEAM, pos));
+        let barrack = new Barrack(Board.ENEMY_TEAM, pos);
+        grid.get(pos).push(barrack);
+        barracks.enemy.push(barrack);
 
         pos = {y: 0, x: Board.GRID_WIDTH-1};
-        grid.get(pos).push(new Barrack(Board.ENEMY_TEAM, pos));
+        barrack = new Barrack(Board.ENEMY_TEAM, pos);
+        grid.get(pos).push(barrack);
+        barracks.enemy.push(barrack);
 
         pos = {y: Board.GRID_HEIGHT-1, x: 0};
-        grid.get(pos).push(new Barrack(Board.PLAYER_TEAM, pos));
+        barrack = new Barrack(Board.PLAYER_TEAM, pos);
+        grid.get(pos).push(barrack);
+        barracks.player.push(barrack);
 
         pos = {y: Board.GRID_HEIGHT-1, x: Board.GRID_WIDTH-1};
-        grid.get(pos).push(new Barrack(Board.PLAYER_TEAM, pos));
-
+        barrack = new Barrack(Board.PLAYER_TEAM, pos);
+        grid.get(pos).push(barrack);
+        barracks.player.push(barrack);
 
         grid.get(base.enemy.pos).push(base.enemy);
         grid.get(base.player.pos).push(base.player);
