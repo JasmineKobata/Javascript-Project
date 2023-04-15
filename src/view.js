@@ -203,7 +203,7 @@ class View {
     drawRules(pos) {
         const title = document.createElement("ul");
         title.classList.add("rulestitle");
-        this.drawMenuDisplayBox("How To Play", title, title);
+        this.drawMenuDisplayBox("How To Play&nbsp;&nbsp;&nbsp;", title, title);
     
         const rules = document.createElement("li");
         this.drawMenuInnerDisplayBox("Steal the enemy's treasure & bring it back to your base!<p>BUYING | Select the barracks to buy troops. All units can move up to 2 spaces in any direction. There are 3 types of troops:</p>-Infantry: Defense 2, Attack 1, Range 1<br>-Archer: Defense 1, Attack 1, Range 2<br>-Defender: Defense 3, Attack 1, Range 1<br><p>UPGRADING | When in enemy territory, units can be ugraded as follows:</p>-Infantry: Defense +1, Attack +2<br>-Archer: Defense +1, Attack +1<br>-Defender: Defense +2, Attack +1<br><p>Units cannot attack after upgrading until the next round. Stats return to normal once returning to friendly territory.</p><p>TREASURE | Pick up the treasure by moving a unit onto the square containing it. (You can only pick up enemy treasure.)</p><p>PRICE CHART<br>Moving or Attacking: 1 Action Point<br>Buying or Upgrading: 2 Action Points</p>",
@@ -227,7 +227,7 @@ class View {
         const title = document.createElement("ul");
         title.classList.add("abouttitle");
 
-        this.drawMenuDisplayBox("About", title, title);
+        this.drawMenuDisplayBox("About&nbsp;&nbsp;&nbsp;", title, title);
     
         const about = document.createElement("li");
         this.drawMenuInnerDisplayBox("<br><br><p>Game developed by <a href='https://www.linkedin.com/in/jdirksen/'>Jasmine Kobata</a></p><p><a href='https://github.com/JasmineKobata/Javascript-Project'>Treasure Wars! GitHub Repo</p><p><a href='https://www.appacademy.io/'>App Academy</a> Javascript Project</p>", about, title);
@@ -258,10 +258,24 @@ class View {
         box.style.listStyle = "none";
         box.style.cursor = "pointer";
         box.innerHTML = str;
-        box.style.font = "25px Copperplate"
+        if (this.ratio < 0.67) {
+            this.ratio = 0.67;
+        }
+        box.style.font = (30*this.ratio - 2) + "px Copperplate"
         box.style.color = "dimgrey"
         box.style.textAlign = "center"
-        box.style.lineHeight = (50*this.ratio).toString()+"px";
+        box.style.lineHeight = "250%";
+
+        const windowResize = window.onresize;
+        window.onresize = () => {
+            windowResize();
+
+            if (this.ratio < 0.67) {
+                this.ratio = 0.67;
+            }
+            box.style.font = (30*this.ratio - 2) + "px Copperplate"
+            box.style.lineHeight = "250%";
+        }
     }
 
     drawMenuInnerDisplayBox(str, box, title) {
@@ -593,12 +607,10 @@ class View {
     bindMovesButton() {
         const movesBackground = document.querySelector(".movesBackground");
         if (movesBackground) {
-            console.log("1", movesBackground);
             movesBackground.addEventListener("click", this.handleMovesBackground.bind(this, movesBackground))
         };
         const movesButton = document.querySelector(".movesButton");
         if (movesButton) {
-            console.log("2", movesButton)
             movesButton.addEventListener("click", this.handleMovesButton.bind(this, movesBackground))
         };
         return movesButton;
@@ -656,18 +668,18 @@ class View {
         if (!document.querySelector(".background").contains(event.target)) {
             this.drawBoard();
             this.game.state = "unselected";
+            const movesBackground = document.querySelector(".movesBackground");
+            if (movesBackground) movesBackground.style.visibility = "hidden";
         }
     }
 
     handleMovesButton(movesBackground, event) {
-        console.log("HI")
         this.game.switchPlayers();
         movesBackground.style.visibility = "hidden";
         this.drawBoard();
     }
 
     handleMovesBackground(movesBackground, event) {
-        console.log("HO")
         if (!document.querySelector(".noMoreMoves").contains(event.target)) {
             movesBackground.style.visibility = "hidden";
         }
