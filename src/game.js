@@ -293,10 +293,11 @@ class Game {
                 unit.downgrade();
             }
             square.pop();
-            if (square.length > 0 && square.last().type() === 'Treasure'
-                && square.last().team !== this.currentPlayer.team) {
-                square.last().pos = pos;
-                this.board.grid.get(pos).push(square.pop());
+            let treasureIdx = this.getTreasureIdx(square);
+            if (treasureIdx !== null) {
+                square[treasureIdx].pos = pos;
+                this.board.grid.get(pos).push(square[treasureIdx]);
+                square.splice(treasureIdx, 1);
             }
             this.board.grid.get(pos).push(unit);
 
@@ -305,6 +306,16 @@ class Game {
             unitMoved = true;
         }
         return unitMoved;
+    }
+
+    getTreasureIdx(square) {
+        for (let i=0; i<square.length; i++) {
+            if (square[i].team !== this.currentPlayer.team
+                && square[i].type() === 'Treasure') {
+                return i;
+            }
+        }
+        return null
     }
 
     attackUnit(pos, square) {

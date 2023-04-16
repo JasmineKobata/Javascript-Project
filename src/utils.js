@@ -34,6 +34,10 @@ Array.prototype.get = function(pos) {
     return this[pos.y][pos.x];
 }
 
+Array.prototype.containsType = function(type) {
+    square.some()
+}
+
 Array.prototype.last = function() {
     return this[this.length - 1];
 }
