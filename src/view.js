@@ -217,7 +217,7 @@ class View {
         rules.classList.add("rulesbox");
 
         title.appendChild(rules);
-        title.style.visibility = 'hidden'
+        // title.style.visibility = 'hidden'
         // this.el.appendChild(title);
         document.getElementsByClassName("background")[0].appendChild(title)
         return rules;
