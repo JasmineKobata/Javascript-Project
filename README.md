@@ -5,7 +5,7 @@ Treasure Wars! is a 2 player turn-based strategy game in which the 2 players wil
 [Click here to play!](https://jasminekobata.github.io/Javascript-Project/)
 
 ## Gameplay
-#### Buying
+#### BUYING
 Each team has two barracks that can generate new units, with a total maximum of 8 units.
 There are 3 different types of units that can be spawned, as follows:
 
@@ -13,7 +13,7 @@ There are 3 different types of units that can be spawned, as follows:
 - Archer:	Defense 1, Attack 1, Attack Range 2
 - Infantry:	Defense 3, Attack 1, Attack Range 1
 
-### MOVING
+### Moving
 All units can move 2 squares in any direction
 
 ### UPGRADING
