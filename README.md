@@ -5,7 +5,7 @@ Treasure Wars! is a 2 player turn-based strategy game in which the 2 players wil
 [Click here to play!](https://jasminekobata.github.io/Javascript-Project/)
 
 ## Gameplay
-#### BUYING
+### Buying
 Each team has two barracks that can generate new units, with a total maximum of 8 units.
 There are 3 different types of units that can be spawned, as follows:
 
@@ -16,7 +16,7 @@ There are 3 different types of units that can be spawned, as follows:
 ### Moving
 All units can move 2 squares in any direction
 
-### UPGRADING
+### Upgrading
 Each unit can be upgraded when in enemy territory, as follows:
 
 - Infantry:	Defense +1, Attack +2
@@ -25,7 +25,7 @@ Each unit can be upgraded when in enemy territory, as follows:
 
 Upgrading will restore any lost unit defense points. Units cannot attack after upgrading until the next round. Stats will revert to their original state once returning to friendly territory.
 
-### TREASURE
+### Treasure
 The treasure is picked up by moving a unit onto the square containing it. Units can only pick up enemy treasure.
 
 ### Price Chart
@@ -35,7 +35,7 @@ Buying:		2 Action Points\
 Upgrading:	2 Action Points
 
 ## Features
-### PATHFINDING
+### Pathfinding
 Unit pathfinding was implemented using recursion
 ```
 getMoves(visited = new Set(), maxDist = 2, pos = this.pos) {
@@ -58,7 +58,7 @@ getMoves(visited = new Set(), maxDist = 2, pos = this.pos) {
 }
 ```
 
-### STATE MACHINE
+### State Machine
 State machine implemented to keep track of game states & actions taken by the player
 ```
     stateMachine() {
