@@ -1,5 +1,5 @@
+## Treasure Wars!
 <img src="./game_shot.png" width="400"></img>\
-##Treasure Wars!
 ---Background---\
 Treasure Wars! is a 2 player turn-based strategy game in which the 2 players will play against eachother, and attempt to capture the treasure chest from the opponent's base and bring it back to their own base.\
 [Click here to play!](https://jasminekobata.github.io/Javascript-Project/)
