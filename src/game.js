@@ -287,7 +287,7 @@ class Game {
     moveUnit(pos, square) {
         let unitMoved = false;
         let unit = square.last();
- 
+
         if (unit.moves && unit.moves.find(e => e.x === pos.x && e.y === pos.y)) {
             unit.pos = pos; //reset unit position;
             if (unit.onHomeTerf()) {
