@@ -45,6 +45,7 @@ class Game {
     //ctx -> {clickedPos always set, selectedSquare that will be set in unselected stage}
     stateMachine() {
         let square = this.board.grid.get(this.ctx.clickedPos);
+        
         switch (this.state) {
             case 'unselected':
                 //if unit upgrade is selected
