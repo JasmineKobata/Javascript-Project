@@ -2,6 +2,9 @@ import Board from "./board";
 import HumanPlayer from "./humanPlayer";
 import { isUpgradeButton, isUpgradeConfirmation } from "./utils";
 
+const MAX_AP = 4;
+const MAX_UNITS = 8;
+
 class Game {
     constructor() {
         this.board = new Board();
@@ -10,7 +13,7 @@ class Game {
         this.player = new HumanPlayer(Board.PLAYER_TEAM);
         this.enemy = new HumanPlayer(Board.ENEMY_TEAM);
         this.currentPlayer = this.player;
-        this.actionPoints = 4;
+        this.actionPoints = MAX_AP;
         this.ctx = {}; //{ clickedPos, selectedSquare }
     }
 
@@ -21,7 +24,7 @@ class Game {
         this.player = new HumanPlayer(Board.PLAYER_TEAM);
         this.enemy = new HumanPlayer(Board.ENEMY_TEAM);
         this.currentPlayer = this.player;
-        this.actionPoints = 4;
+        this.actionPoints = MAX_AP;
         this.ctx = {};
     }
 
@@ -37,7 +40,7 @@ class Game {
                 })
             })
         })
-        this.actionPoints = 4;
+        this.actionPoints = MAX_AP;
         this.state = 'unselected';
         this.currentPlayer === this.player ? this.currentPlayer = this.enemy : this.currentPlayer = this.player;
     }
@@ -57,7 +60,7 @@ class Game {
                     this.ctx.selectedSquare = square;
                     this.state = 'unit';
                 } //else if barrack is selected
-                else if (this.actionPoints > 1 && this.currentPlayer.units.length < 8
+                else if (this.actionPoints > 1 && this.currentPlayer.units.length < MAX_UNITS
                     && this.barrackSelected(square.first())) {
                     this.ctx.menu = this.view.drawBarrackSelection(square.first().pos);
                     this.ctx.selectedSquare = square;
@@ -79,20 +82,7 @@ class Game {
                     }
                 } //else if action not taken
                 else {
-                    this.view.drawBoard();
-                    if (this.unitUpgradeable(this.ctx.exactPos, square.last())) {
-                        this.state = 'upgrade'
-                    }
-                    else if (this.unitSelected(square.last())) {}
-                    else if (this.actionPoints > 1 && this.currentPlayer.units.length < 8
-                        && this.barrackSelected(square.first())) {
-                        this.ctx.menu = this.view.drawBarrackSelection(square.first().pos);
-                        this.state = 'barrack';
-                    }
-                    else {
-                        this.state = 'unselected';
-                    }
-                    this.ctx.selectedSquare = square;
+                    this.redirectState(square);
                 }
                 this.noMoreMovesDisplay();
                 break;
@@ -105,19 +95,7 @@ class Game {
                     this.view.drawBoard();
                 } //else if unit is not bought
                 else {
-                    this.view.drawBoard();
-                    if (this.unitUpgradeable(this.ctx.exactPos, square.last())) {
-                        this.state = 'upgrade'
-                    }
-                    else if (this.unitSelected(square.last())) {
-                        this.state = 'unit';
-                    }
-                    else if (this.barrackSelected(square.first())) {
-                        this.ctx.menu = this.view.drawBarrackSelection(square.first().pos);
-                    } else {
-                        this.state = 'unselected';
-                    }
-                    this.ctx.selectedSquare = square;
+                    this.redirectState(square);
                 }
                 this.noMoreMovesDisplay();
                 break;
@@ -129,21 +107,7 @@ class Game {
                     this.view.drawBoard();
                 }
                 else {
-                    this.view.drawBoard();
-                    //if another unit upgrade is selected
-                    if (this.unitUpgradeable(this.ctx.exactPos, square.last())) {
-                    } //else if a unit is selected
-                    else if (this.unitSelected(square.last())) {
-                        this.state = 'unit';
-                    } //else if a barrack is selected
-                    else if (this.actionPoints > 1 && this.currentPlayer.units.length < 8
-                        && this.barrackSelected(square.first())) {
-                        this.ctx.menu = this.view.drawBarrackSelection(square.first().pos);
-                        this.state = 'barrack';
-                    } else {
-                        this.state = 'unselected';
-                    }
-                    this.ctx.selectedSquare = square;
+                    this.redirectState(square);
                 }
                 this.noMoreMovesDisplay();
                 break;
@@ -152,8 +116,24 @@ class Game {
         }
     }
 
+    redirectState(square) {
+        this.view.drawBoard();
+        if (this.unitUpgradeable(this.ctx.exactPos, square.last())) {
+            this.state = 'upgrade';
+        } else if (this.unitSelected(square.last())) {
+            this.state = 'unit';
+        } else if (this.actionPoints > 1 && this.currentPlayer.units.length < MAX_UNITS
+            && this.barrackSelected(square.first())) {
+            this.ctx.menu = this.view.drawBarrackSelection(square.first().pos);
+            this.state = 'barrack';
+        } else {
+            this.state = 'unselected';
+        }
+        this.ctx.selectedSquare = square;
+    }
+
     noMoreMovesDisplay() {
-        if (!this.movesAvailable() && this.actionPoints < 4) {
+        if (!this.movesAvailable() && this.actionPoints < MAX_AP) {
             const noMoreMoves = this.view.noMoreMoves.querySelector(".noMoreMoves");
             const button = noMoreMoves.querySelector(".movesButton")
         
