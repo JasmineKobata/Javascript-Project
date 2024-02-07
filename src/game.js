@@ -51,21 +51,7 @@ class Game {
         
         switch (this.state) {
             case 'unselected':
-                //if unit upgrade is selected
-                if (this.unitUpgradeable(this.ctx.exactPos, square.last())) {
-                    this.ctx.selectedSquare = square;
-                    this.state = 'upgrade';
-                } //if unit is selected
-                else if (this.unitSelected(square.last())) {
-                    this.ctx.selectedSquare = square;
-                    this.state = 'unit';
-                } //else if barrack is selected
-                else if (this.actionPoints > 1 && this.currentPlayer.units.length < MAX_UNITS
-                    && this.barrackSelected(square.first())) {
-                    this.ctx.menu = this.view.drawBarrackSelection(square.first().pos);
-                    this.ctx.selectedSquare = square;
-                    this.state = 'barrack';
-                }
+                this.redirectState(square);
                 break;
             case 'unit':
                 //if action taken
@@ -118,11 +104,14 @@ class Game {
 
     redirectState(square) {
         this.view.drawBoard();
+        //if unit upgrade is selected
         if (this.unitUpgradeable(this.ctx.exactPos, square.last())) {
             this.state = 'upgrade';
-        } else if (this.unitSelected(square.last())) {
+        } //if unit is selected
+        else if (this.unitSelected(square.last())) {
             this.state = 'unit';
-        } else if (this.actionPoints > 1 && this.currentPlayer.units.length < MAX_UNITS
+        } //else if barrack is selected
+        else if (this.actionPoints > 1 && this.currentPlayer.units.length < MAX_UNITS
             && this.barrackSelected(square.first())) {
             this.ctx.menu = this.view.drawBarrackSelection(square.first().pos);
             this.state = 'barrack';
