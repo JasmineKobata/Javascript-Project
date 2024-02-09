@@ -7,8 +7,18 @@ const MAX_UNITS = 8;
 
 class Game {
     constructor() {
-        this.board = new Board();
         this.view = null;
+        this.setGame();
+        // this.setConnection();
+    }
+
+    resetGame(view) {
+        this.view = view;
+        this.setGame();
+    }
+
+    setGame() {
+        this.board = new Board();
         this.state = 'unselected';
         this.player = new HumanPlayer(Board.PLAYER_TEAM);
         this.enemy = new HumanPlayer(Board.ENEMY_TEAM);
@@ -17,15 +27,16 @@ class Game {
         this.ctx = {}; //{ clickedPos, selectedSquare }
     }
 
-    resetGame(view) {
-        this.board = new Board();
-        this.view = view;
-        this.state = 'unselected';
-        this.player = new HumanPlayer(Board.PLAYER_TEAM);
-        this.enemy = new HumanPlayer(Board.ENEMY_TEAM);
-        this.currentPlayer = this.player;
-        this.actionPoints = MAX_AP;
-        this.ctx = {};
+    setConnection() {
+        reply = "";
+        conn = new Socket;
+
+        // if (conn.open("http://127.0.0.1:5500/index.html")) {
+        //     console.log("HI");
+        //     // conn.write("GET /index.html HTTP/1.0\n\n");
+        //     // reply = conn.read(999999);
+        //     conn.close();
+        // }
     }
 
     switchPlayers() {
