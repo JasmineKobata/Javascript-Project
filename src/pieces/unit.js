@@ -69,25 +69,26 @@ class Unit extends Piece {
         if (maxDist === 0) { return validVisited; }
         var q = [this.pos];
 
-        //TO DO: check max dist, check if blocked by others
         while (q.length !== 0) {
             let newPos = q.shift;
             validVisited.add(JSON.stringify(newPos));
-            let left = {x: newPos.x-1, y: newPos.y};
-            let right = {x: newPos.x+1, y: newPos.y};
-            let up = {x: newPos.x, y: newPos.y - 1};
-            let down = {x: newPos.x, y: newPos.y + 1};
-            if (isOnBoard(left) && !validVisited.has(JSON.stringify(left)))
-                q.push(left);
-            if (isOnBoard(right) && !validVisited.has(JSON.stringify(right)))
-                q.push(right);
-            if (isOnBoard(up) && !validVisited.has(JSON.stringify(up)))
-                q.push(up);
-            if (isOnBoard(down) && validVisited.has(JSON.stringify(down)))
-                q.push(down);
+            this.addToQueue(newPos.left, this.isWithinDist(pos, newPos.left, max));
+            this.addToQueue(newPos.right, this.isWithinDist(pos, newPos.right, max));
+            this.addToQueue(newPos.up, this.isWithinDist(pos, newPos.up, max));
+            this.addToQueue(newPos.down, this.isWithinDist(pos, newPos.down, max));
         }
 
         return validVisited;
+    }
+
+    addToQueue(pos, withinDist) {
+        if (isOnBoard(pos) && withinDist && !this.hasUnit(pos)
+            && !validVisited.has(JSON.stringify(pos)))
+            q.push(pos);
+    }
+
+    isWithinDist(pos, newPos, maxDist) {
+        return Math.abs(pos.x - newPos.x) <= maxDist && Math.abs(pos.y - newPos.y) <= maxDist;
     }
 
     getAttacks() {

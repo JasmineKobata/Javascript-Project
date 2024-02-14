@@ -46,6 +46,22 @@ Array.prototype.first = function() {
     return this[0];
 }
 
+Array.prototype.left = function() {
+    return {x: newPos.x-1, y: newPos.y};
+}
+
+Array.prototype.right = function() {
+    return {x: newPos.x+1, y: newPos.y}
+}
+
+Array.prototype.up = function() {
+    return {x: newPos.x, y: newPos.y - 1};
+}
+
+Array.prototype.down = function() {
+    return {x: newPos.x, y: newPos.y + 1};
+}
+
 Object.prototype.equals = function(pos) {
     return this.x === pos.x && this.y === pos.y;
 }
