@@ -64,6 +64,31 @@ class Unit extends Piece {
 
         return validVisited;
     }
+    
+    getMovesSet2(validVisited = newSet(), maxDist = 2, pos = this.pos) {
+        if (maxDist === 0) { return validVisited; }
+        var q = [this.pos];
+
+        //TO DO: check max dist, check if blocked by others
+        while (q.length !== 0) {
+            let newPos = q.shift;
+            validVisited.add(JSON.stringify(newPos));
+            let left = {x: newPos.x-1, y: newPos.y};
+            let right = {x: newPos.x+1, y: newPos.y};
+            let up = {x: newPos.x, y: newPos.y - 1};
+            let down = {x: newPos.x, y: newPos.y + 1};
+            if (isOnBoard(left) && !validVisited.has(JSON.stringify(left)))
+                q.push(left);
+            if (isOnBoard(right) && !validVisited.has(JSON.stringify(right)))
+                q.push(right);
+            if (isOnBoard(up) && !validVisited.has(JSON.stringify(up)))
+                q.push(up);
+            if (isOnBoard(down) && validVisited.has(JSON.stringify(down)))
+                q.push(down);
+        }
+
+        return validVisited;
+    }
 
     getAttacks() {
         for (let y=this.pos.y-this.attackDist; y <= this.pos.y + this.attackDist; y++) {
