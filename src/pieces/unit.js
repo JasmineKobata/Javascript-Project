@@ -1,6 +1,6 @@
 import Board from "../board";
 import Piece from "../piece";
-import {isOnBoard} from "../utils";
+import {isOnBoard, left, right, up, down} from "../utils";
 
 class Unit extends Piece {
     constructor(team, pos) {
@@ -65,23 +65,26 @@ class Unit extends Piece {
         return validVisited;
     }
     
-    getMovesSet2(validVisited = newSet(), maxDist = 2, pos = this.pos) {
+    getMovesSet2(validVisited = new Set(), maxDist = 2, pos = this.pos) {
         if (maxDist === 0) { return validVisited; }
-        var q = [this.pos];
+        var q = [pos];
 
         while (q.length !== 0) {
-            let newPos = q.shift;
+            let newPos = q.shift();
             validVisited.add(JSON.stringify(newPos));
-            this.addToQueue(newPos.left, this.isWithinDist(pos, newPos.left, max));
-            this.addToQueue(newPos.right, this.isWithinDist(pos, newPos.right, max));
-            this.addToQueue(newPos.up, this.isWithinDist(pos, newPos.up, max));
-            this.addToQueue(newPos.down, this.isWithinDist(pos, newPos.down, max));
+            console.log(newPos);
+            console.log(newPos.left);
+            this.addToQueue(q, newPos.left, this.isWithinDist(pos, newPos.left, maxDist));
+            this.addToQueue(q, newPos.right, this.isWithinDist(pos, newPos.right, maxDist));
+            this.addToQueue(q, newPos.up, this.isWithinDist(pos, newPos.up, maxDist));
+            this.addToQueue(q, newPos.down, this.isWithinDist(pos, newPos.down, maxDist));
         }
 
         return validVisited;
     }
 
-    addToQueue(pos, withinDist) {
+    addToQueue(q, pos, withinDist) {
+        // console.log(isOnBoard(pos) && withinDist && !this.hasUnit(pos) && !validVisited.has(JSON.stringify(pos)))
         if (isOnBoard(pos) && withinDist && !this.hasUnit(pos)
             && !validVisited.has(JSON.stringify(pos)))
             q.push(pos);

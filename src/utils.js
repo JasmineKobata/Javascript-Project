@@ -47,19 +47,19 @@ Array.prototype.first = function() {
 }
 
 Array.prototype.left = function() {
-    return {x: newPos.x-1, y: newPos.y};
+    return {x: this.x-1, y: this.y};
 }
 
 Array.prototype.right = function() {
-    return {x: newPos.x+1, y: newPos.y}
+    return {x: this.x+1, y: this.y}
 }
 
 Array.prototype.up = function() {
-    return {x: newPos.x, y: newPos.y - 1};
+    return {x: this.x, y: this.y - 1};
 }
 
 Array.prototype.down = function() {
-    return {x: newPos.x, y: newPos.y + 1};
+    return {x: this.x, y: this.y + 1};
 }
 
 Object.prototype.equals = function(pos) {
