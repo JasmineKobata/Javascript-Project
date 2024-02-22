@@ -39,7 +39,7 @@ class Unit extends Piece {
     }
 
     getMoves() {
-        this.moves = this.getMovesSet2();
+        this.moves = this.getMovesSetBFS();
         this.moves.delete(JSON.stringify(this.pos));
         this.moves = [...this.moves].map(elem => {
             return JSON.parse(elem);
@@ -47,7 +47,7 @@ class Unit extends Piece {
         return this.moves;
     }
 
-    getMovesSet(validVisited = new Set(), maxDist = 2, pos = this.pos) {
+    getMovesSetDFS(validVisited = new Set(), maxDist = 2, pos = this.pos) {
         if (maxDist === 0) { return validVisited; }
 
         for (let y=pos.y-1; y <= pos.y + 1; y++) {
@@ -65,7 +65,7 @@ class Unit extends Piece {
         return validVisited;
     }
     
-    getMovesSet2(validVisited = new Set(), maxDist = 2, pos = this.pos) {
+    getMovesSetBFS(validVisited = new Set(), maxDist = 2, pos = this.pos) {
         if (maxDist === 0) { return validVisited; }
         var q = [pos];
 
