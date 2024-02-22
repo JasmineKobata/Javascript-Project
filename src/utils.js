@@ -46,19 +46,19 @@ Array.prototype.first = function() {
     return this[0];
 }
 
-Array.prototype.left = function() {
+Object.prototype.left = function() {
     return {x: this.x-1, y: this.y};
 }
 
-Array.prototype.right = function() {
+Object.prototype.right = function() {
     return {x: this.x+1, y: this.y}
 }
 
-Array.prototype.up = function() {
+Object.prototype.up = function() {
     return {x: this.x, y: this.y - 1};
 }
 
-Array.prototype.down = function() {
+Object.prototype.down = function() {
     return {x: this.x, y: this.y + 1};
 }
 

@@ -39,7 +39,7 @@ class Unit extends Piece {
     }
 
     getMoves() {
-        this.moves = this.getMovesSet();
+        this.moves = this.getMovesSet2();
         this.moves.delete(JSON.stringify(this.pos));
         this.moves = [...this.moves].map(elem => {
             return JSON.parse(elem);
@@ -72,19 +72,17 @@ class Unit extends Piece {
         while (q.length !== 0) {
             let newPos = q.shift();
             validVisited.add(JSON.stringify(newPos));
-            console.log(newPos);
-            console.log(newPos.left);
-            this.addToQueue(q, newPos.left, this.isWithinDist(pos, newPos.left, maxDist));
-            this.addToQueue(q, newPos.right, this.isWithinDist(pos, newPos.right, maxDist));
-            this.addToQueue(q, newPos.up, this.isWithinDist(pos, newPos.up, maxDist));
-            this.addToQueue(q, newPos.down, this.isWithinDist(pos, newPos.down, maxDist));
+
+            this.addToQueue(q, newPos.left(), validVisited, this.isWithinDist(pos, newPos.left(), maxDist));
+            this.addToQueue(q, newPos.right(), validVisited, this.isWithinDist(pos, newPos.right(), maxDist));
+            this.addToQueue(q, newPos.up(), validVisited, this.isWithinDist(pos, newPos.up(), maxDist));
+            this.addToQueue(q, newPos.down(), validVisited, this.isWithinDist(pos, newPos.down(), maxDist));
         }
 
         return validVisited;
     }
 
-    addToQueue(q, pos, withinDist) {
-        // console.log(isOnBoard(pos) && withinDist && !this.hasUnit(pos) && !validVisited.has(JSON.stringify(pos)))
+    addToQueue(q, pos, validVisited, withinDist) {
         if (isOnBoard(pos) && withinDist && !this.hasUnit(pos)
             && !validVisited.has(JSON.stringify(pos)))
             q.push(pos);
