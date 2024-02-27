@@ -656,7 +656,7 @@ class View {
             if (isOnBoard(pos)) {
                 this.game.ctx.clickedPos = pos
                 this.game.ctx.exactPos = posExact;
-                this.game.stateMachine();
+                this.game.callStateMachine();
             } else if (isButton(posExact)) {
                 this.game.switchPlayers();
                 this.drawBoard();

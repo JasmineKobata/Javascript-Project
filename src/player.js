@@ -18,6 +18,10 @@ class Player {
         // console.log(this.units, u )
         return this.units;
     }
+
+    type() {
+        return this.constructor.name;
+    }
 }
 
 export default Player;

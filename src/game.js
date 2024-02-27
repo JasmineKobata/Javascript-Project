@@ -56,9 +56,16 @@ class Game {
         this.currentPlayer === this.player ? this.currentPlayer = this.enemy : this.currentPlayer = this.player;
     }
 
+    callStateMachine() {
+        if (this.currentPlayer.type() === 'HumanPlayer')
+            this.stateMachine(this.board.grid.get(this.ctx.clickedPos));
+        else
+            this.stateMachine();
+    }
+
     //ctx -> {clickedPos always set, selectedSquare that will be set in unselected stage}
-    stateMachine() {
-        let square = this.board.grid.get(this.ctx.clickedPos);
+    stateMachine(square) {
+        // let square = this.board.grid.get(this.ctx.clickedPos);
         
         switch (this.state) {
             case 'unselected':
