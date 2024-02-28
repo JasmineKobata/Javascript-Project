@@ -20,12 +20,16 @@ class Game {
     setGame() {
         this.board = new Board();
         this.state = 'unselected';
-        this.player = new HumanPlayer(Board.PLAYER_TEAM);
-        this.enemy = new HumanPlayer(Board.ENEMY_TEAM);
+        this.player = new HumanPlayer(Board.PLAYER_TEAM, this.board.treasure.player);
+        this.enemy = new HumanPlayer(Board.ENEMY_TEAM, this.board.treasure.enemy);
         this.currentPlayer = this.player;
         this.actionPoints = MAX_AP;
         this.ctx = {}; //{ clickedPos, selectedSquare }
     }
+
+    //Next Steps:
+    //- check if player treasure gets updated when treasure changes position
+    //- if no units exist, buy unit
 
     setConnection() {
         reply = "";
@@ -60,7 +64,7 @@ class Game {
         if (this.currentPlayer.type() === 'HumanPlayer')
             this.stateMachine(this.board.grid.get(this.ctx.clickedPos));
         else
-            this.stateMachine();
+            this.stateMachine(chooseMove());
     }
 
     //ctx -> {clickedPos always set, selectedSquare that will be set in unselected stage}
