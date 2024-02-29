@@ -69,7 +69,7 @@ State machine implemented to keep track of game states & actions taken by the pl
 ```
 stateMachine() {
     //get grid square that was clicked on
-    let square = this.board.grid.get(this.stateVariables.clickedPos);
+    let square = this.stateVariables.clickedPos;
     switch (this.state) {
         case 'unselected':
             redirectState(square);
