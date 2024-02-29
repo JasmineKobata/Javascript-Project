@@ -40,7 +40,7 @@ Unit pathfinding was implemented using Breadth First Search
 ```
 getMoves(visited = new Set(), maxDist = 2, pos = this.pos) {
     if (maxDist === 0) { return visited; }
-    var q = [pos];
+    var q = [pos];  //add unit position to the queue
 
     while (q.length !== 0) {
         let newPos = q.shift();
