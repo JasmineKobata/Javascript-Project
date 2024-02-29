@@ -67,83 +67,62 @@ addToQueue(q, pos, visited, maxDist) {
 ### State Machine
 State machine implemented to keep track of game states & actions taken by the player
 ```
-    stateMachine() {
-        //get grid square that was clicked on
-        let square = this.board.grid.get(this.stateVariables.clickedPos);
-        switch (this.state) {
-            case 'unselected':
-                //if unit upgrade is selected
-                if (this.unitUpgradeable(this.stateVariables, square)) {
-                    this.state = 'upgrade';
-                } //if unit is selected
-                else if (this.unitSelected(square)) {
-                    this.state = 'unit';
-                } //else if barrack is selected
-                else if (this.barrackSelected(square)) {
-                    this.state = 'barrack';
-                }
-                break;
-            case 'unit':
-                //if action taken
-                if (this.actionTaken(this.stateVariables)) {
-                    this.state = 'unselected';
-                } //else if action not taken
-                else {
-                    if (this.unitUpgradeable(this.stateVariables, square)) {
-                        this.state = 'upgrade'
-                    }
-                    else if (this.unitSelected(square)) {
-                    	//stay in unit state
-                    }
-                    else if (this.barrackSelected(square)) {
-                        this.state = 'barrack';
-                    }
-                    else {
-                        this.state = 'unselected';
-                    }
-                }
-                break;
-            case 'barrack':
-                //if unit is bought
-                if (this.unitBought(this.stateVariables)) {
-                    this.state = 'unselected';
-                } //else if unit is not bought
-                else {
-                    if (this.unitUpgradeable(this.stateVariables, square)) {
-                        this.state = 'upgrade'
-                    }
-                    else if (this.unitSelected(square)) {
-                        this.state = 'unit';
-                    }
-                    else if (this.barrackSelected(square)) {
-                        //stay in barrack state
-                    } else {
-                        this.state = 'unselected';
-                    }
-                }
-                break;
-            case 'upgrade':
-                //if unit is upgraded
-                if (this.unitUpgraded(this.stateVariables)) {
-                    this.state = 'unselected';
-                } //else if unit is not upgraded
-                else {
-                    if (this.unitUpgradeable(this.stateVariables, square)) {
-                    	//stay in upgrade state
-                    }
-                    else if (this.unitSelected(square)) {
-                        this.state = 'unit';
-                    }
-                    else if (this.barrackSelected(square)) {
-                        this.state = 'barrack';
-                    } else {
-                        this.state = 'unselected';
-                    }
-                }
-                break;
-            default:
-                console.log("ERROR: undefined state");
-        }
+stateMachine() {
+    //get grid square that was clicked on
+    let square = this.board.grid.get(this.stateVariables.clickedPos);
+    switch (this.state) {
+        case 'unselected':
+            redirectState(square);
+            break;
+        case 'unit':
+            //if action taken
+            if (this.actionTaken(this.stateVariables)) {
+                this.state = 'unselected';
+            } //else if action not taken
+            else {
+                redirectState(square);
+            }
+            break;
+        case 'barrack':
+            //if unit is bought
+            if (this.unitBought(this.stateVariables)) {
+                this.state = 'unselected';
+            } //else if unit is not bought
+            else {
+                redirectState(square);
+            }
+            break;
+        case 'upgrade':
+            //if unit is upgraded
+            if (this.unitUpgraded(this.stateVariables)) {
+                this.state = 'unselected';
+            } //else if unit is not upgraded
+            else {
+                redirectState(square);
+            }
+            break;
+        default:
+            console.log("ERROR: undefined state");
+    }
+}
+
+redirectState(square) {
+    this.view.drawBoard();
+    //if unit upgrade is selected
+    if (this.unitUpgradeable(this.stateVariables, square)) {
+        this.state = 'upgrade';
+    } //if unit is selected
+    else if (this.unitSelected(square)) {
+        this.state = 'unit';
+    } //else if barrack is selected
+    else if (this.barrackSelected(square)) {
+        this.state = 'barrack';
+    } //else if nothing is selected
+    else {
+        this.state = 'unselected';
+    }
+    this.ctx.selectedSquare = square;
+}
 ```
 
 
