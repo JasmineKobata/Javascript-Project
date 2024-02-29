@@ -36,25 +36,36 @@ Upgrading:	2 Action Points
 
 ## Features
 ### Pathfinding
-Unit pathfinding was implemented using recursion
+Unit pathfinding was implemented using breadth-first search
 ```
 getMoves(visited = new Set(), maxDist = 2, pos = this.pos) {
     if (maxDist === 0) { return visited; }
+    var q = [pos];
 
-    for (let y=pos.y-1; y <= pos.y + 1; y++) {
-        for (let x=pos.x-1; x <= pos.x + 1; x++) {
-            let newPos = {y: y, x: x};
-            //if newPos is on the board and does not contain a unit
-            if (isOnBoard(newPos) && !this.hasUnit(newPos)) {
-                if (!visited.has(newPos)) {
-                    visited.add(newPos);
-                }
-                visited = this.getMovesSet(visited, maxDist-1, newPos);
-            }
-        }
+    while (q.length !== 0) {
+        let newPos = q.shift();
+        visited.add(newPos);
+
+        //check each direction from newPos & add valid positions
+        this.addToQueue(q, newPos.left(), visited, this.isWithinDist(pos, newPos.left(), maxDist));
+        this.addToQueue(q, newPos.right(), visited, this.isWithinDist(pos, newPos.right(), maxDist));
+        this.addToQueue(q, newPos.up(), visited, this.isWithinDist(pos, newPos.up(), maxDist));
+        this.addToQueue(q, newPos.down(), visited, this.isWithinDist(pos, newPos.down(), maxDist));
     }
 
     return visited;
+}
+
+//adds element to queue if position is valid
+addToQueue(q, pos, visited, withinDist) {
+    if (isOnBoard(pos) && withinDist && !this.hasUnit(pos)
+        && !visited.has(pos))
+        q.push(pos);
+}
+
+//returns true if newPos is maxDist or less indices away from pos
+isWithinDist(pos, newPos, maxDist) {
+    return Math.abs(pos.x - newPos.x) <= maxDist && Math.abs(pos.y - newPos.y) <= maxDist;
 }
 ```
 
