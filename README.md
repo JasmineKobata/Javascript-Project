@@ -59,7 +59,7 @@ getMoves(visited = new Set(), maxDist = 2, pos = this.pos) {
 //adds element to queue if position is valid
 addToQueue(q, pos, visited, maxDist) {
     if (isOnBoard(pos) && this.withinMaxDist(maxDist)
-        && !this.hasUnit(pos) && !visited.has(pos))
+        && !this.posContainsUnit(pos) && !visited.has(pos))
         q.push(pos);
 }
 ```
