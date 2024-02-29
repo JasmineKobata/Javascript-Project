@@ -66,7 +66,7 @@ addToQueue(q, pos, visited, maxDist) {
 
 ### State Machine
 State machine implemented to keep track of game states & actions taken by the player
-```
+```c
 stateMachine() {
     //get grid square that was clicked on
     let square = this.board.grid.get(this.stateVariables.clickedPos);
