@@ -35,8 +35,8 @@ Buying:		2 Action Points\
 Upgrading:	2 Action Points
 
 ## Features
-### Pathfinding
-Unit pathfinding was implemented using breadth-first search
+### BFS Pathfinding
+Unit pathfinding was implemented using Breadth First Search
 ```
 getMoves(visited = new Set(), maxDist = 2, pos = this.pos) {
     if (maxDist === 0) { return visited; }
@@ -46,26 +46,21 @@ getMoves(visited = new Set(), maxDist = 2, pos = this.pos) {
         let newPos = q.shift();
         visited.add(newPos);
 
-        //check each direction from newPos & add valid positions
-        this.addToQueue(q, newPos.left(), visited, this.isWithinDist(pos, newPos.left(), maxDist));
-        this.addToQueue(q, newPos.right(), visited, this.isWithinDist(pos, newPos.right(), maxDist));
-        this.addToQueue(q, newPos.up(), visited, this.isWithinDist(pos, newPos.up(), maxDist));
-        this.addToQueue(q, newPos.down(), visited, this.isWithinDist(pos, newPos.down(), maxDist));
+        //check each direction from newPos & add valid positions to queue
+        this.addToQueue(q, newPos.left(), visited, maxDist);
+        this.addToQueue(q, newPos.right(), visited, maxDist);
+        this.addToQueue(q, newPos.up(), visited, maxDist);
+        this.addToQueue(q, newPos.down(), visited, maxDist);
     }
 
     return visited;
 }
 
 //adds element to queue if position is valid
-addToQueue(q, pos, visited, withinDist) {
-    if (isOnBoard(pos) && withinDist && !this.hasUnit(pos)
-        && !visited.has(pos))
+addToQueue(q, pos, visited, maxDist) {
+    if (isOnBoard(pos) && this.withinMaxDist(maxDist)
+        && !this.hasUnit(pos) && !visited.has(pos))
         q.push(pos);
-}
-
-//returns true if newPos is maxDist or less indices away from pos
-isWithinDist(pos, newPos, maxDist) {
-    return Math.abs(pos.x - newPos.x) <= maxDist && Math.abs(pos.y - newPos.y) <= maxDist;
 }
 ```
 
