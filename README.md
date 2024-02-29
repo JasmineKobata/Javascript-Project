@@ -37,7 +37,7 @@ Upgrading:	2 Action Points
 ## Features
 ### BFS Pathfinding
 Unit pathfinding was implemented using Breadth First Search
-```
+```c
 getMoves(visited = new Set(), maxDist = 2, pos = this.pos) {
     if (maxDist === 0) { return visited; }
     var q = [pos];  //add unit position to the queue
