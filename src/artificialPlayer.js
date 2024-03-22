@@ -12,13 +12,19 @@ class ArtificialPlayer extends Player {
     //-Attack enemy
     chooseMove() {
         //Priority Tree:
-        //if unit exists within reach of treasure
+        //if unit exists within reach of treasure & unit not on treasure
         //  move to treasure square
-        //else if unit can attack
+        //else if unit can attack & not yet attacked
         //  attack
-        //else if unit exists within attack range & 2+ attack points left
+        //else if unit is upgradeable & not yet upgraded
+        //  upgrade
+        //else if unit exists within attack range & 2+ attack points
         //  move to attack range & attack
-        //
+        //else if barracks are empty, unit not bought, & 2+ attack points
+        //  buy unit
+        //else unmoved unit exists
+        //  move unit towards treasure
+        //else forfeit remaining points
     }
 }
 
