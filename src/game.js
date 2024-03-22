@@ -22,6 +22,7 @@ class Game {
         this.state = 'unselected';
         this.player = new HumanPlayer(Board.PLAYER_TEAM, this.board.treasure.player);
         this.enemy = new HumanPlayer(Board.ENEMY_TEAM, this.board.treasure.enemy);
+        console.log(this.player);
         this.currentPlayer = this.player;
         this.actionPoints = MAX_AP;
         this.ctx = {}; //{ clickedPos, selectedSquare }
@@ -281,7 +282,7 @@ class Game {
 
         if (unit.moves && unit.moves.find(e => e.x === pos.x && e.y === pos.y)) {
             unit.pos = pos; //reset unit position;
-            if (unit.onHomeTerf()) {
+            if (unit.onHomeTurf()) {
                 unit.downgrade();
             }
             square.pop();
@@ -296,6 +297,7 @@ class Game {
             this.actionPoints--;
             unit.hasMoved = true;
             unitMoved = true;
+            console.log(this.player);
         }
         return unitMoved;
     }

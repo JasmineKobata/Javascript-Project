@@ -5,6 +5,11 @@ class ArtificialPlayer extends Player {
         super(team);
     }
 
+    //5 Moves available:
+    //-Buy units
+    //-Upgrade unit
+    //-Move unit
+    //-Attack enemy
     chooseMove() {
         
     }

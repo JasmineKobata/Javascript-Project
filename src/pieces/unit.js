@@ -125,7 +125,7 @@ class Unit extends Piece {
             (this.team === Board.ENEMY_TEAM && this.pos.y >= Board.GRID_HEIGHT / 2));
     }
 
-    onHomeTerf() {
+    onHomeTurf() {
         return (this.team === Board.PLAYER_TEAM && this.pos.y >= Board.GRID_HEIGHT / 2) ||
             (this.team === Board.ENEMY_TEAM && this.pos.y < Board.GRID_HEIGHT / 2);
     }
