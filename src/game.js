@@ -65,7 +65,7 @@ class Game {
         if (this.currentPlayer.type() === 'HumanPlayer')
             this.stateMachine(this.board.grid.get(this.ctx.clickedPos));
         else
-            this.stateMachine(chooseMove());
+            this.stateMachine(this.currentPlayer.chooseMove());
     }
 
     //ctx -> {clickedPos always set, selectedSquare that will be set in unselected stage}

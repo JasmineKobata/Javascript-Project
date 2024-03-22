@@ -11,7 +11,14 @@ class ArtificialPlayer extends Player {
     //-Move unit
     //-Attack enemy
     chooseMove() {
-        
+        //Priority Tree:
+        //if unit exists within reach of treasure
+        //  move to treasure square
+        //else if unit can attack
+        //  attack
+        //else if unit exists within attack range & 2+ attack points left
+        //  move to attack range & attack
+        //
     }
 }
 
