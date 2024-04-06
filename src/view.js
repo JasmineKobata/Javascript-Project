@@ -323,7 +323,7 @@ class View {
         background.classList.add("movesBackground")
         background.style.width = "100%";
         background.style.height = "100%";
-        // background.style.position = "absolute";
+        background.style.position = "absolute";
         background.style.top = "0px";
         background.style.visibility = "hidden";
 
@@ -334,8 +334,8 @@ class View {
         module.style.height = "calc(18% - 2px)"
         module.style.backgroundColor = "lightskyblue";
         module.style.border = "1px solid cornflowerblue";
-        // module.style.position = "absolute";
-        module.style.left = "50%";
+        module.style.position = "absolute";
+        // module.style.left = "50%";
         module.style.top = "45%";
         module.style.transform = "translate(-50%, -50%)";
         module.style.margin = "0px"
