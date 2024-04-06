@@ -107,8 +107,8 @@ class View {
         const grid = document.createElement("ul");
         grid.classList.add("grid");
 
-        grid.style.position = "absolute";
-        grid.style.right = "7.5%";
+        // grid.style.position = "absolute";
+        // grid.style.right = "7.5%";
         grid.style.bottom = "calc(0.2% - 32px)";
         grid.style.width = "calc(14.29% - 40px)";
         grid.style.height = "5.85%";
@@ -123,7 +123,7 @@ class View {
 
         cell.style.listStyle = "none";
         cell.style.cursor = "pointer";
-        cell.innerHTML = "Menu"
+        cell.innerHTML = "Test"
         cell.style.font = (25*this.ratio) + "px Copperplate"
 
         cell.style.color = "dimgrey"
@@ -157,8 +157,8 @@ class View {
         const menu = document.createElement("ul");
         menu.classList.add("menu");
 
-        menu.style.position = "absolute";
-        menu.style.right = "7.5%";
+        // menu.style.position = "absolute";
+        // menu.style.right = "7.5%";
         menu.style.bottom = "calc(5.85% - 16px)";
         menu.style.width = "calc(14.29% - 42px)";
         menu.style.height = "calc(5.85% - 2px)";
@@ -250,8 +250,8 @@ class View {
         box.style.height = "calc(75% - 2px)"
         box.style.backgroundColor = "lightskyblue";
         box.style.border = "1px solid cornflowerblue";
-        box.style.position = "absolute";
-        box.style.left = "50%";
+        // box.style.position = "absolute";
+        // box.style.left = "50%";
         box.style.top = "45%";
         box.style.transform = "translate(-50%, -50%)";
         box.style.margin = "0px"
@@ -283,8 +283,8 @@ class View {
         box.style.height = "calc(80% - 2px)"
         box.style.backgroundColor = "cornflowerblue";
         box.style.border = "1px solid cornflowerblue";
-        box.style.position = "absolute";
-        box.style.left = "50%";
+        // box.style.position = "absolute";
+        // box.style.left = "50%";
         box.style.top = "50%";
         box.style.transform = "translate(-50%, -50%)";
         // box.style.margin = "0px";
@@ -323,7 +323,7 @@ class View {
         background.classList.add("movesBackground")
         background.style.width = "100%";
         background.style.height = "100%";
-        background.style.position = "absolute";
+        // background.style.position = "absolute";
         background.style.top = "0px";
         background.style.visibility = "hidden";
 
@@ -334,7 +334,7 @@ class View {
         module.style.height = "calc(18% - 2px)"
         module.style.backgroundColor = "lightskyblue";
         module.style.border = "1px solid cornflowerblue";
-        module.style.position = "absolute";
+        // module.style.position = "absolute";
         module.style.left = "50%";
         module.style.top = "45%";
         module.style.transform = "translate(-50%, -50%)";
