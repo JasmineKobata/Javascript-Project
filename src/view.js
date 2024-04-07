@@ -119,11 +119,11 @@ class View {
         cell.style.border = "1px solid cornflowerblue";
         cell.style.height = "calc(100% - 2px)";
         cell.style.width = "calc(100% - 2px)";
-        cell.style.left = "0px";
+        // cell.style.left = "0px";
 
         cell.style.listStyle = "none";
         cell.style.cursor = "pointer";
-        cell.innerHTML = "Test"
+        cell.innerHTML = "Menu"
         cell.style.font = (25*this.ratio) + "px Copperplate"
 
         cell.style.color = "dimgrey"
@@ -155,7 +155,7 @@ class View {
 
     drawMenuOptions(pos, cell) {
         const menu = document.createElement("ul");
-        menu.classList.add("menu");
+        menu.classList.add("menuOptions");
 
         // menu.style.position = "absolute";
         // menu.style.right = "7.5%";
